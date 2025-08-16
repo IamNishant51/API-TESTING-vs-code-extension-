@@ -3,6 +3,7 @@
   "displayName": "API Tester",
   "description": "Test APIs (GET, POST, PUT, DELETE) directly inside VS Code",
   "version": "0.0.1",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.103.0"
   },
