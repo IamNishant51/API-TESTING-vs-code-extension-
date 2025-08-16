@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>API Tester</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>⚡ API Tester</h1>
+    <button id="newApiBtn">+ New API</button>
+  </header>
+  <div class="container">
+    <div class="sidebar">
+      <h2>Saved APIs</h2>
+      <div id="apiList"></div>
+    </div>
+    <div class="main">
+      <div class="input-group">
+        <label for="method">Method</label>
+        <select id="method">
+          <option>GET</option>
+          <option>POST</option>
+          <option>PUT</option>
+          <option>DELETE</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="url">URL</label>
+        <input type="text" id="url" placeholder="Enter API endpoint" />
+      </div>
+      <div class="input-group">
+        <label for="headers">Headers (JSON)</label>
+        <textarea id="headers">{}</textarea>
+      </div>
+      <div class="input-group">
+        <label for="body">Body (JSON)</label>
+        <textarea id="body">{}</textarea>
+      </div>
+      <button id="sendBtn">Send Request</button>
+      <div class="response">
+        <div class="status" id="status">Status: -</div>
+        <pre id="responseBody">Response will appear here...</pre>
+      </div>
+    </div>
+  </div>
+  <script src="panel.js"></script>
+</body>
+</html>

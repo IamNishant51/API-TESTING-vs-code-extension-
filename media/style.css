@@ -1,0 +1,91 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Main Body */
+body {
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #ffffff;
+  font-size: 15px;
+  line-height: 1.6;
+  padding: 20px;
+}
+
+/* Header */
+header {
+  text-align: center;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffb400;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* Cards Container */
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* Card Style */
+.card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
+}
+
+/* Card Title */
+.card h2 {
+  font-size: 1.3rem;
+  color: #ffb400;
+  margin-bottom: 10px;
+}
+
+/* Status Text */
+.status {
+  font-size: 0.95rem;
+  margin-top: 5px;
+  color: #e0e0e0;
+}
+
+/* Status Badges */
+.badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.badge.success {
+  background: #28a745;
+  color: white;
+}
+
+.badge.failed {
+  background: #dc3545;
+  color: white;
+}
+
+.badge.pending {
+  background: #ffc107;
+  color: black;
+}
