@@ -1,70 +1,39 @@
-# Repo Health Assistant - API Client (Postman-like)
+# API Tester Pro
 
-This VS Code extension provides a **Postman-like API client** inside VS Code.  
-You can send HTTP requests (GET, POST, PUT, DELETE, etc.), add headers, and view responses directly within the editor — without leaving VS Code.
+**API Tester Pro** is a VS Code extension that helps developers monitor their repositories by showing:
 
----
+- ✅ CI/CD build status
+- 📂 Open Pull Requests
+- 🕒 Pending Reviews
 
-## 🚀 Features
-
-- Send **HTTP requests** (GET, POST, PUT, DELETE, PATCH, etc.)
-- Add custom **headers** and **body** (JSON/text)
-- See **response status code**
-- Pretty-printed JSON response
-- Works directly in VS Code sidebar
+It also sends notifications when your build fails or when a PR review is added.
 
 ---
 
-## 📦 Installation
+## Features
 
-1. Clone this repository or download the extension.
-2. Open the folder in **VS Code**.
-3. Run the extension:
-   - Press `F5` → Opens a new VS Code window with the extension loaded.
-4. (Optional) Package & install:
-   - Run:  
-     ```bash
-     vsce package
-     ```
-   - Then install `.vsix` file in VS Code.
+- View your repository’s health in a dashboard inside VS Code.
+- Monitor CI/CD pipeline status.
+- Keep track of open PRs and pending reviews.
+- Get notifications for build failures or new PR reviews.
 
 ---
 
-## 🛠️ How to Use
+## Demo
 
-1. Open the command palette (`Ctrl+Shift+P` / `Cmd+Shift+P`).
-2. Search for **"Open API Client"** and press enter.
-3. The panel will open in VS Code with:
-   - **Method Selector** → Choose GET, POST, etc.
-   - **URL Input** → Enter your API endpoint.
-   - **Headers** → Provide headers in JSON format. Example:
-     ```json
-     {
-       "Content-Type": "application/json",
-       "Authorization": "Bearer <token>"
-     }
-     ```
-   - **Body** → Enter raw JSON/text if required by request.
-4. Click **Send Request**.
-5. View:
-   - **Status** → Response status code (200, 404, etc.)
-   - **Response Body** → Pretty-printed JSON or raw text.
+Here’s a demo of the dashboard in action:
+
+![Dashboard Screenshot 1](images/screenshot1.png)
 
 ---
 
-## 📖 Example Usage
+![Dashboard Screenshot 2](images/screenshot2.png)
 
-### GET request:
-- Method: `GET`
-- URL: `https://jsonplaceholder.typicode.com/posts/1`
-- Headers: `{}` (leave empty)
-- Body: (leave empty)
+---
 
-### POST request:
-- Method: `POST`
-- URL: `https://jsonplaceholder.typicode.com/posts`
-- Headers:
-  ```json
-  {
-    "Content-Type": "application/json"
-  }
+## Installation
+
+1. Open VS Code.
+2. Go to the **Extensions** view (`Ctrl+Shift+X` or `Cmd+Shift+X` on macOS).
+3. Search for **Repo Health Assistant**.
+4. Click **Install**.
