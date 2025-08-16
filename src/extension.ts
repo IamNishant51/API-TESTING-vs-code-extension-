@@ -186,7 +186,7 @@ function getWebviewContent(): string {
           <div class="sub-tab" data-tab="headers">Headers</div>
         </div>
         <textarea id="body" rows="8" placeholder="Request Body (JSON)"></textarea>
-        <textarea id="headers" class="hidden" rows="8" placeholder='{ "Content-Type": "application/json" }'></textarea>
+        <textarea id="headers" class="hidden" rows="8"></textarea>
         <div class="response" id="response">Response will appear here...</div>
       </div>
       <script>
@@ -197,7 +197,14 @@ function getWebviewContent(): string {
 
         function addTab() {
           const id = Date.now().toString();
-          const state = { id, url: "", method: "GET", body: "", headers: "", response: "" };
+          const state = { 
+            id, 
+            url: "", 
+            method: "GET", 
+            body: "", 
+            headers: '{ "Content-Type": "application/json" }', 
+            response: "" 
+          };
           tabs.push(state);
           setActiveTab(id);
           renderTabs();
@@ -249,7 +256,7 @@ function getWebviewContent(): string {
             tab.url = document.getElementById("url").value;
             tab.method = document.getElementById("method").value;
             tab.body = document.getElementById("body").value;
-            tab.headers = document.getElementById("headers").value;
+            tab.headers = document.getElementById("headers").value || '{ "Content-Type": "application/json" }';
             tab.response = document.getElementById("response").innerText;
           }
         }
@@ -260,7 +267,7 @@ function getWebviewContent(): string {
             document.getElementById("url").value = tab.url;
             document.getElementById("method").value = tab.method;
             document.getElementById("body").value = tab.body;
-            document.getElementById("headers").value = tab.headers;
+            document.getElementById("headers").value = tab.headers || '{ "Content-Type": "application/json" }';
             document.getElementById("response").innerText = tab.response || "Response will appear here...";
           }
         }
@@ -272,7 +279,7 @@ function getWebviewContent(): string {
             command: "sendRequest",
             url: tab.url,
             method: tab.method,
-            headers: tab.headers ? JSON.parse(tab.headers) : {},
+            headers: tab.headers ? JSON.parse(tab.headers) : { "Content-Type": "application/json" },
             body: tab.body,
           });
         };

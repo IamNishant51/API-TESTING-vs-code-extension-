@@ -3,7 +3,7 @@
   "displayName": "API Tester Pro",
   "publisher": "NishantUnavane",
   "description": "⚡ Test APIs (GET, POST, PUT, DELETE) directly inside VS Code with a Postman-like interface.",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "license": "MIT",
   "repository": {
     "type": "git",
