@@ -1,1 +1,401 @@
-(()=>{"use strict";var e={265:function(e,n,t){var a,o=this&&this.__createBinding||(Object.create?function(e,n,t,a){void 0===a&&(a=t);var o=Object.getOwnPropertyDescriptor(n,t);o&&!("get"in o?!n.__esModule:o.writable||o.configurable)||(o={enumerable:!0,get:function(){return n[t]}}),Object.defineProperty(e,a,o)}:function(e,n,t,a){void 0===a&&(a=t),e[a]=n[t]}),s=this&&this.__setModuleDefault||(Object.create?function(e,n){Object.defineProperty(e,"default",{enumerable:!0,value:n})}:function(e,n){e.default=n}),d=this&&this.__importStar||(a=function(e){return a=Object.getOwnPropertyNames||function(e){var n=[];for(var t in e)Object.prototype.hasOwnProperty.call(e,t)&&(n[n.length]=t);return n},a(e)},function(e){if(e&&e.__esModule)return e;var n={};if(null!=e)for(var t=a(e),d=0;d<t.length;d++)"default"!==t[d]&&o(n,e,t[d]);return s(n,e),n});Object.defineProperty(n,"__esModule",{value:!0}),n.activate=function(e){const n=r.commands.registerCommand("api-tester.open",()=>{const e=r.window.createWebviewPanel("apiTester","API Tester",r.ViewColumn.One,{enableScripts:!0,retainContextWhenHidden:!0});e.webview.html='\n    <!DOCTYPE html>\n    <html lang="en">\n    <head>\n      <meta charset="UTF-8" />\n      <style>\n        body {\n          font-family: sans-serif;\n          margin: 0;\n          background: #1e1e1e;\n          color: #ddd;\n          display: flex;\n          flex-direction: column;\n          height: 100vh;\n        }\n        header {\n          background: #202123;\n          padding: 10px;\n          display: flex;\n          align-items: center;\n          gap: 10px;\n        }\n        select, input, textarea, button {\n          border-radius: 4px;\n          border: none;\n          padding: 6px;\n          font-size: 14px;\n        }\n        select, input {\n          background: #2d2f31;\n          color: #eee;\n        }\n        textarea {\n          background: #2d2f31;\n          color: #eee;\n          resize: vertical;\n        }\n        button {\n          background: #f26b38;\n          color: white;\n          cursor: pointer;\n        }\n        button:hover {\n          opacity: 0.9;\n        }\n        .tabs {\n          display: flex;\n          background: #2a2c2e;\n          padding: 5px;\n          overflow-x: auto;\n        }\n        .tab {\n          padding: 6px 12px;\n          margin-right: 6px;\n          background: #3a3d3f;\n          color: white;\n          border-radius: 4px 4px 0 0;\n          cursor: pointer;\n          display: flex;\n          align-items: center;\n          gap: 6px;\n        }\n        .tab.active {\n          background: #f26b38;\n        }\n        .tab button {\n          background: transparent;\n          color: white;\n          border: none;\n          cursor: pointer;\n          font-size: 12px;\n        }\n        .content {\n          flex: 1;\n          display: flex;\n          flex-direction: column;\n          padding: 10px;\n          background: #1e1e1e;\n          overflow: auto;\n        }\n        .response {\n          margin-top: 10px;\n          background: #252728;\n          padding: 10px;\n          border-radius: 4px;\n          white-space: pre-wrap;\n          color: #a9dc76;\n          font-family: monospace;\n        }\n        .sub-tabs {\n          display: flex;\n          gap: 10px;\n          margin: 10px 0;\n        }\n        .sub-tab {\n          padding: 6px 10px;\n          cursor: pointer;\n          border-radius: 4px;\n          background: #333;\n          color: #aaa;\n        }\n        .sub-tab.active {\n          background: #f26b38;\n          color: white;\n        }\n        .hidden {\n          display: none;\n        }\n      </style>\n    </head>\n    <body>\n      <div class="tabs" id="tabs"></div>\n      <header>\n        <select id="method">\n          <option>GET</option>\n          <option>POST</option>\n          <option>PUT</option>\n          <option>PATCH</option>\n          <option>DELETE</option>\n        </select>\n        <input type="text" id="url" placeholder="Enter request URL..." style="flex:1"/>\n        <button id="send">Send</button>\n        <button id="newTab">+ Tab</button>\n      </header>\n      <div class="content">\n        <div class="sub-tabs">\n          <div class="sub-tab active" data-tab="body">Body</div>\n          <div class="sub-tab" data-tab="headers">Headers</div>\n        </div>\n        <textarea id="body" rows="8" placeholder="Request Body (JSON)"></textarea>\n        <textarea id="headers" class="hidden" rows="8" placeholder=\'{ "Content-Type": "application/json" }\'></textarea>\n        <div class="response" id="response">Response will appear here...</div>\n      </div>\n      <script>\n        const vscode = acquireVsCodeApi();\n\n        let tabs = [];\n        let activeTab = null;\n\n        function addTab() {\n          const id = Date.now().toString();\n          const state = { id, url: "", method: "GET", body: "", headers: "", response: "" };\n          tabs.push(state);\n          setActiveTab(id);\n          renderTabs();\n          loadState();\n        }\n\n        function removeTab(id) {\n          tabs = tabs.filter(t => t.id !== id);\n          if (activeTab === id && tabs.length > 0) {\n            setActiveTab(tabs[0].id);\n          } else if (tabs.length === 0) {\n            addTab();\n          }\n          renderTabs();\n          loadState();\n        }\n\n        function setActiveTab(id) {\n          activeTab = id;\n        }\n\n        function renderTabs() {\n          const tabsDiv = document.getElementById("tabs");\n          tabsDiv.innerHTML = "";\n          tabs.forEach(tab => {\n            const el = document.createElement("div");\n            el.className = "tab" + (tab.id === activeTab ? " active" : "");\n            el.innerHTML = tab.url || "New Request";\n            const closeBtn = document.createElement("button");\n            closeBtn.textContent = "x";\n            closeBtn.onclick = (e) => {\n              e.stopPropagation();\n              removeTab(tab.id);\n            };\n            el.appendChild(closeBtn);\n            el.onclick = () => {\n              saveState();\n              setActiveTab(tab.id);\n              renderTabs();\n              loadState();\n            };\n            tabsDiv.appendChild(el);\n          });\n        }\n\n        function saveState() {\n          const tab = tabs.find(t => t.id === activeTab);\n          if (tab) {\n            tab.url = document.getElementById("url").value;\n            tab.method = document.getElementById("method").value;\n            tab.body = document.getElementById("body").value;\n            tab.headers = document.getElementById("headers").value;\n            tab.response = document.getElementById("response").innerText;\n          }\n        }\n\n        function loadState() {\n          const tab = tabs.find(t => t.id === activeTab);\n          if (tab) {\n            document.getElementById("url").value = tab.url;\n            document.getElementById("method").value = tab.method;\n            document.getElementById("body").value = tab.body;\n            document.getElementById("headers").value = tab.headers;\n            document.getElementById("response").innerText = tab.response || "Response will appear here...";\n          }\n        }\n\n        document.getElementById("send").onclick = () => {\n          saveState();\n          const tab = tabs.find(t => t.id === activeTab);\n          vscode.postMessage({\n            command: "sendRequest",\n            url: tab.url,\n            method: tab.method,\n            headers: tab.headers ? JSON.parse(tab.headers) : {},\n            body: tab.body,\n          });\n        };\n\n        document.getElementById("newTab").onclick = () => {\n          saveState();\n          addTab();\n        };\n\n        window.addEventListener("message", event => {\n          const message = event.data;\n          if (message.command === "showResponse") {\n            const tab = tabs.find(t => t.id === activeTab);\n            if (tab) {\n              tab.response = message.response;\n              document.getElementById("response").innerText = message.response;\n            }\n          }\n        });\n\n        document.querySelectorAll(".sub-tab").forEach(el => {\n          el.onclick = () => {\n            document.querySelectorAll(".sub-tab").forEach(st => st.classList.remove("active"));\n            el.classList.add("active");\n            const target = el.dataset.tab;\n            document.getElementById("body").classList.add("hidden");\n            document.getElementById("headers").classList.add("hidden");\n            document.getElementById(target).classList.remove("hidden");\n          };\n        });\n\n        // Start with one tab\n        addTab();\n      <\/script>\n    </body>\n    </html>\n  ',e.webview.onDidReceiveMessage(async n=>{if("sendRequest"===n.command)try{const t=await fetch(n.url,{method:n.method,headers:n.headers,body:"GET"!==n.method&&"HEAD"!==n.method?n.body:void 0}),a=await t.text();let o=a;try{o=JSON.stringify(JSON.parse(a),null,2)}catch(e){}e.webview.postMessage({command:"showResponse",response:o})}catch(n){e.webview.postMessage({command:"showResponse",response:`Error: ${n.message}`})}})});e.subscriptions.push(n)},n.deactivate=function(){};const r=d(t(398))},398:e=>{e.exports=require("vscode")}},n={},t=function t(a){var o=n[a];if(void 0!==o)return o.exports;var s=n[a]={exports:{}};return e[a].call(s.exports,s,s.exports,t),s.exports}(265);module.exports=t})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ([
+/* 0 */
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.activate = activate;
+exports.deactivate = deactivate;
+const vscode = __importStar(__webpack_require__(1));
+function activate(context) {
+    const disposable = vscode.commands.registerCommand("api-tester.open", () => {
+        const panel = vscode.window.createWebviewPanel("apiTester", "API Tester", vscode.ViewColumn.One, {
+            enableScripts: true,
+            retainContextWhenHidden: true,
+        });
+        panel.webview.html = getWebviewContent();
+        panel.webview.onDidReceiveMessage(async (message) => {
+            if (message.command === "sendRequest") {
+                try {
+                    const response = await fetch(message.url, {
+                        method: message.method,
+                        headers: message.headers,
+                        body: message.method !== "GET" && message.method !== "HEAD"
+                            ? message.body
+                            : undefined,
+                    });
+                    const text = await response.text();
+                    let formatted = text;
+                    try {
+                        formatted = JSON.stringify(JSON.parse(text), null, 2);
+                    }
+                    catch (e) { }
+                    panel.webview.postMessage({
+                        command: "showResponse",
+                        response: formatted,
+                    });
+                }
+                catch (err) {
+                    panel.webview.postMessage({
+                        command: "showResponse",
+                        response: `Error: ${err.message}`,
+                    });
+                }
+            }
+            else if (message.command === "clearResponse") {
+                panel.webview.postMessage({
+                    command: "showResponse",
+                    response: "Response cleared.",
+                });
+            }
+        });
+    });
+    context.subscriptions.push(disposable);
+}
+function getWebviewContent() {
+    return /*html*/ `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <style>
+        body {
+          font-family: sans-serif;
+          margin: 0;
+          background: #1e1e1e;
+          color: #ddd;
+          display: flex;
+          flex-direction: column;
+          height: 100vh;
+        }
+        header {
+          background: #202123;
+          padding: 10px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        select, input, textarea, button {
+          border-radius: 4px;
+          border: none;
+          padding: 6px;
+          font-size: 14px;
+        }
+        select, input {
+          background: #2d2f31;
+          color: #eee;
+        }
+        textarea {
+          background: #2d2f31;
+          color: #eee;
+          resize: vertical;
+        }
+        button {
+          background: #f26b38;
+          color: white;
+          cursor: pointer;
+        }
+        button:hover {
+          opacity: 0.9;
+        }
+        .tabs {
+          display: flex;
+          background: #2a2c2e;
+          padding: 5px;
+          overflow-x: auto;
+        }
+        .tab {
+          padding: 6px 12px;
+          margin-right: 6px;
+          background: #3a3d3f;
+          color: white;
+          border-radius: 4px 4px 0 0;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .tab.active {
+          background: #f26b38;
+        }
+        .tab button {
+          background: transparent;
+          color: white;
+          border: none;
+          cursor: pointer;
+          font-size: 12px;
+        }
+        .content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          padding: 10px;
+          background: #1e1e1e;
+          overflow: auto;
+        }
+        .response {
+          margin-top: 10px;
+          background: #252728;
+          padding: 10px;
+          border-radius: 4px;
+          white-space: pre-wrap;
+          color: #a9dc76;
+          font-family: monospace;
+        }
+        .sub-tabs {
+          display: flex;
+          gap: 10px;
+          margin: 10px 0;
+        }
+        .sub-tab {
+          padding: 6px 10px;
+          cursor: pointer;
+          border-radius: 4px;
+          background: #333;
+          color: #aaa;
+        }
+        .sub-tab.active {
+          background: #f26b38;
+          color: white;
+        }
+        .hidden {
+          display: none;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="tabs" id="tabs"></div>
+      <header>
+        <select id="method">
+          <option>GET</option>
+          <option>POST</option>
+          <option>PUT</option>
+          <option>PATCH</option>
+          <option>DELETE</option>
+        </select>
+        <input type="text" id="url" placeholder="Enter request URL..." style="flex:1"/>
+        <button id="send">Send</button>
+        <button id="clear">Clear Response</button>
+        <button id="newTab">+ Tab</button>
+      </header>
+      <div class="content">
+        <div class="sub-tabs">
+          <div class="sub-tab active" data-tab="body">Body</div>
+          <div class="sub-tab" data-tab="headers">Headers</div>
+        </div>
+        <textarea id="body" rows="8" placeholder="Request Body (JSON)"></textarea>
+        <textarea id="headers" class="hidden" rows="8" placeholder='{ "Content-Type": "application/json" }'></textarea>
+        <div class="response" id="response">Response will appear here...</div>
+      </div>
+      <script>
+        const vscode = acquireVsCodeApi();
+
+        let tabs = [];
+        let activeTab = null;
+
+        function addTab() {
+          const id = Date.now().toString();
+          const state = { id, url: "", method: "GET", body: "", headers: "", response: "" };
+          tabs.push(state);
+          setActiveTab(id);
+          renderTabs();
+          loadState();
+        }
+
+        function removeTab(id) {
+          tabs = tabs.filter(t => t.id !== id);
+          if (activeTab === id && tabs.length > 0) {
+            setActiveTab(tabs[0].id);
+          } else if (tabs.length === 0) {
+            addTab();
+          }
+          renderTabs();
+          loadState();
+        }
+
+        function setActiveTab(id) {
+          activeTab = id;
+        }
+
+        function renderTabs() {
+          const tabsDiv = document.getElementById("tabs");
+          tabsDiv.innerHTML = "";
+          tabs.forEach(tab => {
+            const el = document.createElement("div");
+            el.className = "tab" + (tab.id === activeTab ? " active" : "");
+            el.innerHTML = tab.url || "New Request";
+            const closeBtn = document.createElement("button");
+            closeBtn.textContent = "x";
+            closeBtn.onclick = (e) => {
+              e.stopPropagation();
+              removeTab(tab.id);
+            };
+            el.appendChild(closeBtn);
+            el.onclick = () => {
+              saveState();
+              setActiveTab(tab.id);
+              renderTabs();
+              loadState();
+            };
+            tabsDiv.appendChild(el);
+          });
+        }
+
+        function saveState() {
+          const tab = tabs.find(t => t.id === activeTab);
+          if (tab) {
+            tab.url = document.getElementById("url").value;
+            tab.method = document.getElementById("method").value;
+            tab.body = document.getElementById("body").value;
+            tab.headers = document.getElementById("headers").value;
+            tab.response = document.getElementById("response").innerText;
+          }
+        }
+
+        function loadState() {
+          const tab = tabs.find(t => t.id === activeTab);
+          if (tab) {
+            document.getElementById("url").value = tab.url;
+            document.getElementById("method").value = tab.method;
+            document.getElementById("body").value = tab.body;
+            document.getElementById("headers").value = tab.headers;
+            document.getElementById("response").innerText = tab.response || "Response will appear here...";
+          }
+        }
+
+        document.getElementById("send").onclick = () => {
+          saveState();
+          const tab = tabs.find(t => t.id === activeTab);
+          vscode.postMessage({
+            command: "sendRequest",
+            url: tab.url,
+            method: tab.method,
+            headers: tab.headers ? JSON.parse(tab.headers) : {},
+            body: tab.body,
+          });
+        };
+
+        document.getElementById("clear").onclick = () => {
+          const responseEl = document.getElementById("response");
+          responseEl.innerText = "Response cleared.";
+          const tab = tabs.find(t => t.id === activeTab);
+          if (tab) tab.response = "";
+          vscode.postMessage({ command: "clearResponse" });
+        };
+
+        document.getElementById("newTab").onclick = () => {
+          saveState();
+          addTab();
+        };
+
+        window.addEventListener("message", event => {
+          const message = event.data;
+          if (message.command === "showResponse") {
+            const tab = tabs.find(t => t.id === activeTab);
+            if (tab) {
+              tab.response = message.response;
+              document.getElementById("response").innerText = message.response;
+            }
+          }
+        });
+
+        document.querySelectorAll(".sub-tab").forEach(el => {
+          el.onclick = () => {
+            document.querySelectorAll(".sub-tab").forEach(st => st.classList.remove("active"));
+            el.classList.add("active");
+            const target = el.dataset.tab;
+            document.getElementById("body").classList.add("hidden");
+            document.getElementById("headers").classList.add("hidden");
+            document.getElementById(target).classList.remove("hidden");
+          };
+        });
+
+        // Start with one tab
+        addTab();
+      </script>
+    </body>
+    </html>
+  `;
+}
+function deactivate() { }
+
+
+/***/ }),
+/* 1 */
+/***/ ((module) => {
+
+module.exports = require("vscode");
+
+/***/ })
+/******/ 	]);
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__(0);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
+/******/ })()
+;
+//# sourceMappingURL=extension.js.map

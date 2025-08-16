@@ -42,6 +42,11 @@ export function activate(context: vscode.ExtensionContext) {
             response: `Error: ${err.message}`,
           });
         }
+      } else if (message.command === "clearResponse") {
+        panel.webview.postMessage({
+          command: "showResponse",
+          response: "Response cleared.",
+        });
       }
     });
   });
@@ -172,6 +177,7 @@ function getWebviewContent(): string {
         </select>
         <input type="text" id="url" placeholder="Enter request URL..." style="flex:1"/>
         <button id="send">Send</button>
+        <button id="clear">Clear Response</button>
         <button id="newTab">+ Tab</button>
       </header>
       <div class="content">
@@ -269,6 +275,14 @@ function getWebviewContent(): string {
             headers: tab.headers ? JSON.parse(tab.headers) : {},
             body: tab.body,
           });
+        };
+
+        document.getElementById("clear").onclick = () => {
+          const responseEl = document.getElementById("response");
+          responseEl.innerText = "Response cleared.";
+          const tab = tabs.find(t => t.id === activeTab);
+          if (tab) tab.response = "";
+          vscode.postMessage({ command: "clearResponse" });
         };
 
         document.getElementById("newTab").onclick = () => {
