@@ -35,5 +35,5 @@ Here’s a demo of the dashboard in action:
 
 1. Open VS Code.
 2. Go to the **Extensions** view (`Ctrl+Shift+X` or `Cmd+Shift+X` on macOS).
-3. Search for **Repo Health Assistant**.
+3. Search for **API Tester Pro**.
 4. Click **Install**.
