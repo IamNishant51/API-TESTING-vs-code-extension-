@@ -23,11 +23,13 @@ It also sends notifications when your build fails or when a PR review is added.
 
 Here’s a demo of the dashboard in action:
 
-![Demo](https://github.com/IamNishant51/API-TESTING-vs-code-extension-/blob/main/images/screenshot1.png)
+---
+
+![Demo](https://raw.githubusercontent.com/IamNishant51/API-TESTING-vs-code-extension-/main/images/screenshot1.png)
 
 ---
 
-![Demo](https://github.com/IamNishant51/API-TESTING-vs-code-extension-/blob/main/images/screenshot2.png)
+![Demo](https://raw.githubusercontent.com/IamNishant51/API-TESTING-vs-code-extension-/main/images/screenshot2.png)
 
 ---
 
