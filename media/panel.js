@@ -9,36 +9,52 @@ const toggleSidebarBtn = document.getElementById("toggleSidebarBtn");
 const newRequestBtn = document.getElementById("newRequestBtn");
 const requestListEl = document.getElementById("requestList");
 
-const requestNameInput = document.getElementById("requestNameInput"); // NEW: Request Name
+const requestNameInput = document.getElementById("requestNameInput");
 const methodSelectEl = document.getElementById("methodSelect");
 const urlInputEl = document.getElementById("urlInput");
 const sendBtnEl = document.getElementById("sendBtn");
 
 const requestBodyEl = document.getElementById("requestBody");
 const requestHeadersEl = document.getElementById("requestHeaders");
-const responseOutputEl = document.getElementById("responseOutput");
+const responseOutputEl = document.getElementById("responseOutput"); // Response Body Output
+const responseHeadersOutputEl = document.getElementById("responseHeadersOutput"); // Response Headers Output
+
 const statusCodeEl = document.getElementById("statusCode");
 const responseTimeEl = document.getElementById("responseTime");
 const responseSizeEl = document.getElementById("responseSize");
 const clearResponseBtn = document.getElementById("clearResponseBtn");
 
-const tabButtons = document.querySelectorAll(".tab-button");
-const tabPanels = document.querySelectorAll(".tab-panel");
+const requestTabButtons = document.querySelectorAll(".request-section .tab-button"); // Select only request section tabs
+const requestTabPanels = document.querySelectorAll(".request-section .tab-panel"); // Select only request section panels
 
-// NEW: Params Tab Elements
+const responseTabButtons = document.querySelectorAll(".response-section .tab-button"); // Select response section tabs
+const responseTabPanels = document.querySelectorAll(".response-section .tab-panel"); // Select response section panels
+
+// Params Tab Elements
 const paramsContainer = document.getElementById("paramsContainer");
 const addParamBtn = document.getElementById("addParamBtn");
 
-// NEW: Auth Tab Elements
+// Auth Tab Elements
 const authTypeSelect = document.getElementById("authTypeSelect");
 const bearerTokenInputGroup = document.getElementById("bearerTokenInputGroup");
 const bearerTokenInput = document.getElementById("bearerTokenInput");
 
-// NEW: Environment Variables Tab Element
+// Environment Variables Tab Element
 const environmentVariablesEl = document.getElementById("environmentVariables");
 
+// Format Buttons
+const formatHeadersBtn = document.getElementById("formatHeadersBtn");
+const formatBodyBtn = document.getElementById("formatBodyBtn");
+
+// Copy Buttons
+const copyUrlBtn = document.getElementById("copyUrlBtn");
+const copyHeadersBtn = document.getElementById("copyHeadersBtn");
+const copyBodyBtn = document.getElementById("copyBodyBtn");
+const copyResponseBodyBtn = document.getElementById("copyResponseBodyBtn");
+const copyResponseHeadersBtn = document.getElementById("copyResponseHeadersBtn");
+
+
 // State Management
-// Request structure updated to include name, params, and auth
 let savedRequests = JSON.parse(localStorage.getItem("apiTesterRequests") || "[]");
 let activeRequestIndex = null;
 let isSidebarCollapsed = false;
@@ -68,6 +84,10 @@ function parseEnvironmentVariables() {
     } catch (e) {
         console.error("Error parsing environment variables JSON:", e);
         environmentVars = {}; // Reset on error
+        vscode.postMessage({
+            command: "showError",
+            message: "Invalid JSON in Environment Variables. Please correct it."
+        });
     }
     saveStateToVsCode(); // Save updated variables
 }
@@ -222,8 +242,11 @@ function resetResponseDisplay() {
   statusCodeEl.textContent = "Status: -";
   responseTimeEl.textContent = "Time: -";
   responseSizeEl.textContent = "Size: -";
-  responseOutputEl.textContent = "Response will appear here...";
+  responseOutputEl.textContent = "Response body will appear here...";
+  responseHeadersOutputEl.textContent = "Response headers will appear here..."; // Clear headers too
   statusCodeEl.classList.remove('status-code-success', 'status-code-error');
+  // Reset response tab to body
+  switchTab(responseTabButtons[0], responseTabButtons, responseTabPanels);
 }
 
 // --------------------
@@ -325,6 +348,91 @@ function updateAuthUI() {
     saveCurrentRequest(); // Save auth state on change
 }
 
+// --------------------
+// General Utility Functions
+// --------------------
+
+/**
+ * Formats a textarea's content as pretty-printed JSON.
+ * @param {HTMLTextAreaElement} textareaEl The textarea element to format.
+ */
+function formatJsonInput(textareaEl) {
+    try {
+        const parsed = JSON.parse(textareaEl.value);
+        textareaEl.value = JSON.stringify(parsed, null, 2);
+        vscode.postMessage({ command: "showInfo", message: "JSON formatted successfully!" });
+    } catch (e) {
+        vscode.postMessage({ command: "showError", message: "Invalid JSON. Cannot format." });
+    }
+}
+
+/**
+ * Copies text to the clipboard and provides user feedback with icon animation.
+ * @param {string} text The text to copy.
+ * @param {HTMLElement} buttonElement The button element that was clicked.
+ * @param {string} successMessage Message to show on successful copy.
+ */
+function copyToClipboard(text, buttonElement, successMessage = "Copied to clipboard!") {
+    if (!navigator.clipboard) {
+        // Fallback for older browsers
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed'; // Avoid scrolling to bottom
+        textarea.style.left = '-9999px';
+        textarea.style.opacity = '0'; // Hide it
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            vscode.postMessage({ command: "showInfo", message: successMessage });
+        } catch (err) {
+            vscode.postMessage({ command: "showError", message: "Failed to copy text. Please copy manually." });
+        }
+        document.body.removeChild(textarea);
+        return;
+    }
+
+    const copyIcon = buttonElement.querySelector('.copy-icon');
+    const checkIcon = buttonElement.querySelector('.check-icon');
+
+    navigator.clipboard.writeText(text).then(() => {
+        vscode.postMessage({ command: "showInfo", message: successMessage });
+
+        // Animation feedback
+        if (copyIcon && checkIcon) {
+            copyIcon.classList.add('hidden');
+            checkIcon.classList.remove('hidden');
+            buttonElement.classList.add('copied-active'); // For potential button-wide animation
+        }
+
+        setTimeout(() => {
+            if (copyIcon && checkIcon) {
+                copyIcon.classList.remove('hidden');
+                checkIcon.classList.add('hidden');
+                buttonElement.classList.remove('copied-active');
+            }
+        }, 1200); // Duration for the animation feedback
+    }).catch(err => {
+        vscode.postMessage({ command: "showError", message: "Failed to copy text: " + err });
+    });
+}
+
+/**
+ * Generic function to switch tabs within a group.
+ * @param {HTMLElement} clickedButton The button that was clicked.
+ * @param {NodeListOf<HTMLElement>} allButtons All tab buttons in the group.
+ * @param {NodeListOf<HTMLElement>} allPanels All tab panels in the group.
+ */
+function switchTab(clickedButton, allButtons, allPanels) {
+    allButtons.forEach(btn => btn.classList.remove("active"));
+    allPanels.forEach(panel => panel.classList.add("hidden"));
+
+    clickedButton.classList.add("active");
+    const targetPanelId = clickedButton.dataset.target;
+    document.getElementById(targetPanelId).classList.remove("hidden");
+}
+
 
 // --------------------
 // Event Listeners
@@ -352,10 +460,14 @@ sendBtnEl.addEventListener("click", () => {
           headers = JSON.stringify(headersObj);
       } catch (e) {
           console.error("Error parsing headers JSON for auth:", e);
-          // Fallback: append Authorization if JSON parsing fails
-          if (!headers.includes("Authorization")) { // Avoid double adding
-              headers = headers ? `${headers}\nAuthorization: Bearer ${substituteVariables(bearerTokenInput.value)}` : `{"Authorization": "Bearer ${substituteVariables(bearerTokenInput.value)}"}`;
-          }
+          vscode.postMessage({
+            command: "showError",
+            message: "Invalid JSON in Request Headers. Bearer token might not be applied correctly."
+          });
+          // Fallback: This part would only work if headers were not strictly JSON before,
+          // but if they are, the JSON.parse error means we can't merge cleanly.
+          // For now, if parsing fails, we proceed with potentially malformed headers,
+          // relying on the user to fix their JSON.
       }
   }
 
@@ -364,7 +476,9 @@ sendBtnEl.addEventListener("click", () => {
   responseTimeEl.textContent = "Time: -";
   responseSizeEl.textContent = "Size: -";
   responseOutputEl.textContent = "Waiting for response...";
+  responseHeadersOutputEl.textContent = "Waiting for response..."; // Clear headers output on new request
   statusCodeEl.classList.remove('status-code-success', 'status-code-error');
+  switchTab(responseTabButtons[0], responseTabButtons, responseTabPanels); // Reset response tab to body
 
   // Post message to the VS Code extension to send the HTTP request
   vscode.postMessage({
@@ -405,34 +519,46 @@ window.addEventListener("message", (event) => {
     }
     responseSizeEl.textContent = `Size: ${sizeDisplay}`;
 
-    // NEW: Pretty print JSON response if content-type is JSON
+    // Pretty print JSON response body if content-type is JSON
     let displayBody = message.body;
-    // Safely access content-type, providing a default empty string if headers or content-type is undefined
     const contentType = message.headers && message.headers['content-type'] ? message.headers['content-type'] : '';
     
     if (contentType.includes('application/json')) {
         try {
             displayBody = JSON.stringify(JSON.parse(message.body), null, 2);
         } catch (e) {
-            console.warn("Could not pretty print JSON response:", e);
+            console.warn("Could not pretty print JSON response body:", e);
             // Fallback to raw body if parsing fails
         }
     }
     responseOutputEl.textContent = displayBody;
+
+    // Display response headers
+    let displayHeaders = '';
+    if (message.headers) {
+        for (const key in message.headers) {
+            if (Object.hasOwnProperty.call(message.headers, key)) {
+                displayHeaders += `${key}: ${message.headers[key]}\n`;
+            }
+        }
+    } else {
+        displayHeaders = 'No response headers received.';
+    }
+    responseHeadersOutputEl.textContent = displayHeaders;
   }
 });
 
-// Tab switching logic
-tabButtons.forEach(button => {
+// Request Tab switching logic
+requestTabButtons.forEach(button => {
   button.addEventListener("click", () => {
-    // Remove 'active' class from all tab buttons and hide all panels
-    tabButtons.forEach(btn => btn.classList.remove("active"));
-    tabPanels.forEach(panel => panel.classList.add("hidden"));
+    switchTab(button, requestTabButtons, requestTabPanels);
+  });
+});
 
-    // Add 'active' class to the clicked button and show its corresponding panel
-    button.classList.add("active");
-    const targetPanelId = button.dataset.target; // Get target panel ID from data-target attribute
-    document.getElementById(targetPanelId).classList.remove("hidden");
+// Response Tab switching logic
+responseTabButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    switchTab(button, responseTabButtons, responseTabPanels);
   });
 });
 
@@ -454,25 +580,36 @@ clearResponseBtn.addEventListener("click", () => {
     resetResponseDisplay(); // Simply call the existing function to clear the response area
 });
 
-// NEW: Add Parameter button click
+// Add Parameter button click
 addParamBtn.addEventListener('click', () => {
     addParamRow();
     saveCurrentRequest(); // Save state after adding a new param row
 });
 
-// NEW: Auth type select change listener
+// Auth type select change listener
 authTypeSelect.addEventListener('change', updateAuthUI);
 bearerTokenInput.addEventListener('input', saveCurrentRequest); // Auto-save token input
 
-// NEW: Auto-save on main input changes
+// Auto-save on main input changes
 requestNameInput.addEventListener('input', saveCurrentRequest);
 methodSelectEl.addEventListener('change', saveCurrentRequest);
 urlInputEl.addEventListener('input', saveCurrentRequest);
 requestHeadersEl.addEventListener('input', saveCurrentRequest);
 requestBodyEl.addEventListener('input', saveCurrentRequest);
 
-// NEW: Environment variables input change listener
+// Environment variables input change listener
 environmentVariablesEl.addEventListener('input', parseEnvironmentVariables);
+
+// Format JSON Buttons
+formatHeadersBtn.addEventListener('click', () => formatJsonInput(requestHeadersEl));
+formatBodyBtn.addEventListener('click', () => formatJsonInput(requestBodyEl));
+
+// Copy to Clipboard Buttons (now passing the button element itself)
+copyUrlBtn.addEventListener('click', (e) => copyToClipboard(urlInputEl.value, e.currentTarget, "URL copied!"));
+copyHeadersBtn.addEventListener('click', (e) => copyToClipboard(requestHeadersEl.value, e.currentTarget, "Request Headers copied!"));
+copyBodyBtn.addEventListener('click', (e) => copyToClipboard(requestBodyEl.value, e.currentTarget, "Request Body copied!"));
+copyResponseBodyBtn.addEventListener('click', (e) => copyToClipboard(responseOutputEl.textContent, e.currentTarget, "Response Body copied!"));
+copyResponseHeadersBtn.addEventListener('click', (e) => copyToClipboard(responseHeadersOutputEl.textContent, e.currentTarget, "Response Headers copied!"));
 
 
 // --------------------

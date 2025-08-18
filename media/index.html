@@ -41,6 +41,10 @@
             <option value="DELETE">DELETE</option>
           </select>
           <input type="text" id="urlInput" class="url-input" placeholder="Enter request URL" />
+          <button id="copyUrlBtn" class="icon-button copy-button" title="Copy URL">
+            <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <svg class="check-icon hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </button>
           <button id="sendBtn" class="send-button">Send</button>
         </div>
 
@@ -73,10 +77,34 @@
         </div>
 
         <div id="headers-panel" class="tab-panel hidden">
+          <div class="textarea-header">
+            <label>Raw Headers (JSON)</label>
+            <div class="textarea-actions">
+              <button id="formatHeadersBtn" class="icon-button" title="Format JSON">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+              </button>
+              <button id="copyHeadersBtn" class="icon-button copy-button" title="Copy Headers">
+                <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <svg class="check-icon hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </button>
+            </div>
+          </div>
           <textarea id="requestHeaders" class="code-input" placeholder="Headers (JSON, e.g., {&quot;Content-Type&quot;: &quot;application/json&quot;})"></textarea>
         </div>
 
         <div id="body-panel" class="tab-panel hidden">
+          <div class="textarea-header">
+            <label>Request Body</label>
+            <div class="textarea-actions">
+              <button id="formatBodyBtn" class="icon-button" title="Format JSON">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+              </button>
+              <button id="copyBodyBtn" class="icon-button copy-button" title="Copy Body">
+                <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <svg class="check-icon hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </button>
+            </div>
+          </div>
           <textarea id="requestBody" class="code-input" placeholder="Request Body (JSON, XML, etc.)"></textarea>
         </div>
         
@@ -103,7 +131,31 @@
             </button>
           </div>
         </div>
-        <pre id="responseOutput" class="code-output">Response will appear here...</pre>
+        
+        <div class="tab-controls response-tab-controls">
+          <button class="tab-button active" data-target="response-body-panel">Body</button>
+          <button class="tab-button" data-target="response-headers-panel">Headers</button>
+        </div>
+
+        <div id="response-body-panel" class="tab-panel active response-panel">
+            <div class="response-panel-header">
+                <button id="copyResponseBodyBtn" class="icon-button copy-button" title="Copy Response Body">
+                    <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <svg class="check-icon hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </button>
+            </div>
+            <pre id="responseOutput" class="code-output">Response body will appear here...</pre>
+        </div>
+
+        <div id="response-headers-panel" class="tab-panel hidden response-panel">
+            <div class="response-panel-header">
+                <button id="copyResponseHeadersBtn" class="icon-button copy-button" title="Copy Response Headers">
+                    <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <svg class="check-icon hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </button>
+            </div>
+            <pre id="responseHeadersOutput" class="code-output">Response headers will appear here...</pre>
+        </div>
       </div>
     </div>
   </div>

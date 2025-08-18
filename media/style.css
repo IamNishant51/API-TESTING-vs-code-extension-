@@ -397,6 +397,80 @@ body {
   min-height: 200px; /* Give panels a minimum height */
 }
 
+/* Header for textareas with format/copy buttons */
+.textarea-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5px 5px 5px;
+    color: var(--pm-text-secondary);
+    font-size: 0.85em;
+}
+
+.textarea-actions {
+    display: flex;
+    gap: 5px;
+}
+
+/* Icon Buttons (Format, Copy) */
+.icon-button {
+    background-color: transparent;
+    border: none;
+    color: var(--pm-text-secondary);
+    /* Make buttons square and slightly larger */
+    width: 30px; /* Fixed width */
+    height: 30px; /* Fixed height */
+    border-radius: 4px; /* Square with slight rounding */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease; /* Add transform for animation */
+    position: relative; /* For icon positioning */
+    overflow: hidden; /* Hide overflowing icon during transition */
+}
+
+.icon-button:hover {
+    background-color: var(--pm-bg-lighter);
+    color: var(--pm-accent-blue);
+}
+.icon-button svg {
+    stroke: currentColor;
+    fill: none;
+    position: absolute; /* Position icons for transition */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Animate icon opacity and position */
+    width: 18px; /* Slightly larger icon size for better visibility */
+    height: 18px; /* Slightly larger icon size for better visibility */
+}
+
+/* Hidden class for toggling icons */
+.hidden {
+  display: none;
+  opacity: 0;
+  pointer-events: none; /* Prevent interaction when hidden */
+}
+
+/* Animation for copied state */
+.copy-button.copied-active {
+    background-color: var(--pm-success); /* Green background on copy */
+    color: var(--pm-text-primary); /* White icon */
+    transform: scale(1.05); /* Slight pop effect */
+}
+
+.copy-button.copied-active .copy-icon {
+    opacity: 0;
+    transform: translate(-50%, -150%); /* Move copy icon out */
+}
+
+.copy-button.copied-active .check-icon {
+    opacity: 1;
+    transform: translate(-50%, -50%); /* Move check icon in */
+}
+
+
 .code-input {
   width: 100%;
   height: 200px;
@@ -416,9 +490,6 @@ body {
   border-color: var(--pm-accent-blue);
 }
 
-.hidden {
-  display: none;
-}
 
 /* NEW: Key-Value Container (for Params) */
 .key-value-container {
@@ -613,6 +684,31 @@ body {
     stroke: currentColor; /* Use text color for stroke */
 }
 
+/* Specific styles for response tabs */
+.response-tab-controls {
+    border-bottom: 1px solid var(--pm-border);
+    margin-bottom: 0; /* Remove margin, response panels handle it */
+    background-color: var(--pm-bg-light); /* Ensure consistent background */
+    padding-top: 5px; /* Visual separation from response header */
+}
+
+.response-panel {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 0; /* No top padding as header is inside */
+    border-radius: 0 0 4px 4px;
+}
+
+.response-panel-header {
+    display: flex;
+    justify-content: flex-end; /* Push buttons to the right */
+    align-items: center;
+    padding: 5px 10px;
+    background-color: var(--pm-bg-dark); /* Darker background for response panel header */
+    border-bottom: 1px solid var(--pm-border);
+    flex-shrink: 0; /* Prevent header from shrinking */
+}
 
 .code-output {
   flex-grow: 1;
