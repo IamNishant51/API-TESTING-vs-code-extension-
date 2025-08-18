@@ -1,91 +1,628 @@
-/* General Reset */
+/* media/style.css */
+
+/* Postman-like Color Palette (Dark Mode Emulation) */
+:root {
+  --pm-bg-dark: #222222; /* Main background */
+  --pm-bg-light: #2d2d2d; /* Lighter background for panels/inputs */
+  --pm-bg-lighter: #3c3c3c; /* Even lighter for hover states, active tabs */
+  --pm-text-primary: #f2f2f2; /* Main text color */
+  --pm-text-secondary: #aaaaaa; /* Secondary text, placeholders */
+  --pm-border: #444444; /* Borders and dividers */
+  --pm-accent-blue: #007bff; /* Primary accent for buttons, active state */
+  --pm-accent-blue-hover: #0056b3; /* Darker blue on hover */
+  --pm-method-get: #61affe; /* GET method color */
+  --pm-method-post: #49cc90; /* POST method color */
+  --pm-method-put: #fca130; /* PUT method color */
+  --pm-method-patch: #50e3c2; /* PATCH method color */
+  --pm-method-delete: #f93e3e; /* DELETE method color */
+  --pm-success: #28a745; /* Success status */
+  --pm-error: #dc3545; /* Error status */
+  --pm-info: #17a2b8; /* Info status */
+
+  /* VS Code Theme Variables (fallback for good measure where not overridden) */
+  --vscode-editor-background: var(--pm-bg-dark);
+  --vscode-editor-foreground: var(--pm-text-primary);
+  --vscode-input-background: var(--pm-bg-light);
+  --vscode-input-foreground: var(--pm-text-primary);
+  --vscode-input-border: var(--pm-border);
+  --vscode-button-background: var(--pm-accent-blue);
+  --vscode-button-foreground: var(--pm-text-primary);
+  --vscode-button-hoverBackground: var(--pm-accent-blue-hover);
+  --vscode-focusBorder: var(--pm-accent-blue);
+  --vscode-sideBar-background: var(--pm-bg-dark);
+  --vscode-sideBar-foreground: var(--pm-text-primary);
+  --vscode-list-activeSelectionBackground: var(--pm-bg-lighter);
+  --vscode-list-activeSelectionForeground: var(--pm-text-primary);
+  --vscode-list-hoverBackground: var(--pm-bg-lighter);
+  --vscode-list-inactiveSelectionBackground: transparent;
+  --vscode-list-inactiveSelectionForeground: var(--pm-text-primary);
+  --vscode-editorGroupHeader-tabsBackground: var(--pm-bg-dark);
+  --vscode-editorGroup-border: var(--pm-border);
+  --vscode-panel-background: var(--pm-bg-light);
+  --vscode-panelTitle-activeForeground: var(--pm-text-primary);
+  --vscode-panelTitle-inactiveForeground: var(--pm-text-secondary);
+  --vscode-errorForeground: var(--pm-error);
+  --vscode-terminal-ansiGreen: var(--pm-success);
+  --vscode-terminal-ansiRed: var(--pm-error);
+}
+
+/* General Reset and Base Styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif; /* Postman uses Inter or similar */
 }
 
-/* Main Body */
 body {
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: #ffffff;
-  font-size: 15px;
-  line-height: 1.6;
-  padding: 20px;
+  background-color: var(--pm-bg-dark);
+  color: var(--pm-text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  display: flex;
+  height: 100vh;
+  overflow: hidden; /* Prevent body scroll */
 }
 
-/* Header */
-header {
-  text-align: center;
-  padding: 15px;
-  margin-bottom: 20px;
-}
-
-header h1 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #ffb400;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-}
-
-/* Cards Container */
+/* Main Container - Flexbox for sidebar and main content */
 .container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
+  display: flex;
+  width: 100%;
+  height: 100%;
 }
 
-/* Card Style */
-.card {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(12px);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  min-width: 280px; /* Important for transition */
+  background-color: var(--pm-bg-dark);
+  border-right: 1px solid var(--pm-border);
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  overflow-y: auto; /* Scrollable history */
+  flex-shrink: 0; /* Prevent shrinking below min-width */
+  transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out, padding 0.3s ease-in-out; /* Smooth collapse/expand */
 }
 
-.card:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
+/* Collapsed Sidebar State */
+.container.sidebar-collapsed .sidebar {
+    width: 50px; /* Slightly wider to ensure button is clickable */
+    min-width: 50px;
+    padding: 15px 5px; /* Keep vertical padding, reduce horizontal */
+    border-right: 1px solid var(--pm-border); /* Keep border for visual separation */
 }
 
-/* Card Title */
-.card h2 {
-  font-size: 1.3rem;
-  color: #ffb400;
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
   margin-bottom: 10px;
+  border-bottom: 1px solid var(--pm-border);
+  flex-shrink: 0; /* Prevent header from shrinking */
+  white-space: nowrap; /* Prevent "History" from wrapping */
 }
 
-/* Status Text */
-.status {
-  font-size: 0.95rem;
-  margin-top: 5px;
-  color: #e0e0e0;
+/* Hide header text and new request button when collapsed */
+.container.sidebar-collapsed .sidebar-header h2 {
+    display: none;
 }
 
-/* Status Badges */
-.badge {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 0.8rem;
+.container.sidebar-collapsed .new-request-btn {
+    display: none;
+}
+
+/* Ensure toggle button remains visible and centered when collapsed */
+.container.sidebar-collapsed .sidebar-header {
+    justify-content: center;
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.sidebar-header h2 {
+  font-size: 1.1em;
+  color: var(--pm-text-primary);
+  font-weight: 500;
+  transition: opacity 0.3s, width 0.3s;
+}
+
+.sidebar-actions {
+    display: flex;
+    gap: 8px; /* Space between action buttons */
+}
+
+.new-request-btn, .toggle-sidebar-btn {
+  background-color: transparent; /* No background for these buttons */
+  color: var(--pm-text-primary);
+  border: none;
+  border-radius: 4px;
+  padding: 5px;
+  cursor: pointer;
+  font-size: 1.2em;
+  line-height: 1;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  display: flex; /* For SVG alignment */
+  align-items: center;
+  justify-content: center;
+  min-width: 28px; /* Ensure minimum clickable area */
+  min-height: 28px;
+}
+
+.new-request-btn:hover, .toggle-sidebar-btn:hover {
+  background-color: var(--pm-bg-lighter);
+  color: var(--pm-accent-blue);
+}
+.new-request-btn svg, .toggle-sidebar-btn svg {
+  fill: currentColor; /* Use text color for SVG */
+}
+
+/* --- ICON DISPLAY LOGIC --- */
+/* By default, hide the expand icon and show the collapse icon */
+.toggle-sidebar-btn .collapse-icon {
+    display: block;
+}
+.toggle-sidebar-btn .expand-icon {
+    display: none;
+}
+
+/* When sidebar is collapsed, hide the collapse icon and show the expand icon */
+.container.sidebar-collapsed .toggle-sidebar-btn .collapse-icon {
+    display: none;
+}
+.container.sidebar-collapsed .toggle-sidebar-btn .expand-icon {
+    display: block;
+}
+/* --- END ICON DISPLAY LOGIC --- */
+
+
+.request-list {
+  flex-grow: 1;
+  /* Hide list content when collapsed */
+  transition: opacity 0.3s ease-in-out;
+}
+
+.container.sidebar-collapsed .request-list {
+    display: none; /* Completely hide to prevent any interaction */
+}
+
+
+.request-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: transparent;
+  padding: 8px 10px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  overflow: hidden;
+  font-size: 0.9em;
+}
+
+.request-item:hover {
+  background-color: var(--pm-bg-lighter);
+}
+
+.request-item.active {
+  background-color: var(--pm-accent-blue); /* Postman uses blue for active item */
+  color: var(--pm-text-primary);
+}
+
+.request-item span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+  padding-right: 10px;
+}
+
+.request-item .delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--pm-text-secondary);
+  font-size: 0.9em;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+  width: 20px; /* Fixed width for consistent alignment */
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.request-item:hover .delete-btn,
+.request-item.active .delete-btn {
+  opacity: 1;
+}
+
+.request-item .delete-btn:hover {
+  color: var(--pm-error);
+  background-color: rgba(255,0,0,0.2); /* Light red background on hover */
+  border-radius: 3px;
+}
+
+
+/* Main Content Area */
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--pm-bg-light);
+  padding: 15px; /* Consistent padding */
+  transition: margin-left 0.3s ease-in-out; /* Shift when sidebar collapses */
+}
+
+/* Adjust main content margin when sidebar collapses */
+.container.sidebar-collapsed .main-content {
+    margin-left: 0; /* No gap when sidebar is hidden */
+}
+
+/* NEW: Request Name Input */
+.request-name-input {
+    width: 100%;
+    background-color: var(--pm-bg-lighter);
+    color: var(--pm-text-primary);
+    border: 1px solid var(--pm-border);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 0.9em;
+    outline: none;
+    margin-bottom: 10px; /* Space below name input */
+}
+.request-name-input:focus {
+    border-color: var(--pm-accent-blue);
+}
+
+
+/* Request Section */
+.request-section {
+  background-color: var(--pm-bg-light);
+  border: 1px solid var(--pm-border);
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.request-line {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.method-select {
+  background-color: var(--pm-bg-lighter);
+  color: var(--pm-text-primary);
+  border: 1px solid var(--pm-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 0.9em;
+  outline: none;
+  cursor: pointer;
+  min-width: 90px;
+  text-align: center; /* Center text in dropdown */
+  appearance: none; /* Remove default arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="%23f2f2f2" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>'); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 25px; /* Make space for custom arrow */
+}
+
+.method-select:focus {
+  border-color: var(--pm-accent-blue);
+}
+
+/* Specific colors for methods in dropdown */
+.method-select option[value="GET"] { color: var(--pm-method-get); }
+.method-select option[value="POST"] { color: var(--pm-method-post); }
+.method-select option[value="PUT"] { color: var(--pm-method-put); }
+.method-select option[value="PATCH"] { color: var(--pm-method-patch); }
+.method-select option[value="DELETE"] { color: var(--pm-method-delete); }
+
+
+.url-input {
+  flex-grow: 1;
+  background-color: var(--pm-bg-lighter);
+  color: var(--pm-text-primary);
+  border: 1px solid var(--pm-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 0.9em;
+  outline: none;
+}
+
+.url-input:focus {
+  border-color: var(--pm-accent-blue);
+}
+
+.send-button {
+  background-color: var(--pm-accent-blue);
+  color: var(--pm-text-primary);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 20px; /* Slightly more padding */
+  font-size: 0.9em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.send-button:hover {
+  background-color: var(--pm-accent-blue-hover);
+}
+
+/* Tab Controls */
+.tab-controls {
+  display: flex;
+  border-bottom: 1px solid var(--pm-border);
+  margin-bottom: 10px; /* Space between tabs and panel */
+}
+
+.tab-button {
+  background-color: transparent;
+  color: var(--pm-text-secondary);
+  border: none;
+  padding: 10px 18px; /* More padding for tab buttons */
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 500;
+  border-radius: 4px 4px 0 0;
+  border-bottom: 2px solid transparent;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.tab-button:hover {
+  background-color: var(--pm-bg-lighter);
+}
+
+.tab-button.active {
+  background-color: var(--pm-bg-light);
+  color: var(--pm-text-primary);
+  border-bottom-color: var(--pm-accent-blue); /* Active tab indicator */
+  font-weight: 600;
+}
+
+/* Tab Panels (Body, Headers, Params, Auth, Env) */
+.tab-panel {
+  padding-top: 5px; /* Small gap */
+  background-color: var(--pm-bg-light); /* Match active tab background */
+  border-radius: 0 0 4px 4px;
+  min-height: 200px; /* Give panels a minimum height */
+}
+
+.code-input {
+  width: 100%;
+  height: 200px;
+  background-color: var(--pm-bg-dark); /* Darker background for code input */
+  color: var(--pm-text-primary);
+  border: 1px solid var(--pm-border);
+  border-radius: 4px;
+  padding: 10px;
+  font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+  resize: vertical;
+  outline: none;
+  line-height: 1.4; /* Better readability for code */
+}
+
+.code-input:focus {
+  border-color: var(--pm-accent-blue);
+}
+
+.hidden {
+  display: none;
+}
+
+/* NEW: Key-Value Container (for Params) */
+.key-value-container {
+    padding: 5px;
+    background-color: var(--pm-bg-dark); /* Darker background for key-value inputs */
+    border: 1px solid var(--pm-border);
+    border-radius: 4px;
+    max-height: 160px; /* Limit height for scrolling */
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+.key-value-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.key-value-row:last-child {
+    margin-bottom: 0; /* No margin for the last row */
+}
+
+.key-value-row input[type="text"] {
+    flex: 1; /* Both key and value inputs take equal space */
+    background-color: var(--pm-bg-light);
+    color: var(--pm-text-primary);
+    border: 1px solid var(--pm-border);
+    border-radius: 3px;
+    padding: 6px 8px;
+    font-size: 0.9em;
+    outline: none;
+}
+.key-value-row input[type="text"]:focus {
+    border-color: var(--pm-accent-blue);
+}
+
+.key-value-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.key-value-row .delete-key-value-btn {
+    background: transparent;
+    border: none;
+    color: var(--pm-text-secondary);
+    cursor: pointer;
+    font-size: 1.1em;
+    padding: 3px;
+    border-radius: 3px;
+    transition: background-color 0.2s, color 0.2s;
+    flex-shrink: 0;
+}
+.key-value-row .delete-key-value-btn:hover {
+    background-color: rgba(255,0,0,0.2);
+    color: var(--pm-error);
+}
+
+.add-key-value-btn {
+    background-color: var(--pm-bg-lighter);
+    color: var(--pm-text-primary);
+    border: 1px solid var(--pm-border);
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.add-key-value-btn:hover {
+    background-color: var(--pm-accent-blue);
+    border-color: var(--pm-accent-blue);
+    color: var(--pm-text-primary);
+}
+
+
+/* NEW: Auth Section */
+.auth-section {
+    background-color: var(--pm-bg-dark);
+    border: 1px solid var(--pm-border);
+    border-radius: 4px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 180px; /* Give Auth panel some height too */
+}
+.auth-section label {
+    color: var(--pm-text-secondary);
+    font-size: 0.9em;
+}
+.auth-select, .auth-input {
+    width: 100%;
+    background-color: var(--pm-bg-light);
+    color: var(--pm-text-primary);
+    border: 1px solid var(--pm-border);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 0.9em;
+    outline: none;
+}
+.auth-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="%23f2f2f2" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 25px;
+}
+.auth-select:focus, .auth-input:focus {
+    border-color: var(--pm-accent-blue);
+}
+.auth-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+
+/* Response Section */
+.response-section {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--pm-bg-light);
+  border: 1px solid var(--pm-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.response-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--pm-bg-dark); /* Darker background for response header */
+  padding: 8px 15px;
+  border-bottom: 1px solid var(--pm-border);
+}
+
+.response-header h3 {
+  font-size: 1em;
+  color: var(--pm-text-primary);
+  font-weight: 600;
+}
+
+.response-meta {
+  font-size: 0.8em; /* Slightly smaller text */
+  color: var(--pm-text-secondary);
+  display: flex;
+  gap: 15px; /* Spacing between meta items */
+  align-items: center; /* Align items vertically */
+}
+
+.status-code-success {
+  color: var(--pm-success);
   font-weight: bold;
-  margin-top: 10px;
 }
 
-.badge.success {
-  background: #28a745;
-  color: white;
+.status-code-error {
+  color: var(--pm-error);
+  font-weight: bold;
 }
 
-.badge.failed {
-  background: #dc3545;
-  color: white;
+.response-time, .response-size {
+    color: var(--pm-text-secondary);
 }
 
-.badge.pending {
-  background: #ffc107;
-  color: black;
+/* Clear Response Button Styles */
+.clear-response-btn {
+    background-color: transparent;
+    color: var(--pm-text-secondary); /* Match other icons */
+    border: none;
+    border-radius: 4px;
+    padding: 3px; /* Smaller padding for a tighter fit */
+    cursor: pointer;
+    font-size: 1em; /* Adjust size if needed */
+    line-height: 1;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px; /* Space from other meta info */
+}
+
+.clear-response-btn:hover {
+    background-color: var(--pm-bg-lighter);
+    color: var(--pm-error); /* Red on hover to signify clear/delete */
+}
+.clear-response-btn svg {
+    fill: none; /* Make sure fill is none for stroke icons */
+    stroke: currentColor; /* Use text color for stroke */
+}
+
+
+.code-output {
+  flex-grow: 1;
+  background-color: var(--pm-bg-dark); /* Darker background for output */
+  color: var(--pm-text-primary);
+  padding: 15px;
+  font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow: auto;
+  line-height: 1.4;
 }
