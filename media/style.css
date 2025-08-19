@@ -1,25 +1,22 @@
-/* media/style.css */
 
-/* Postman-like Color Palette (Dark Mode Emulation) */
 :root {
-  --pm-bg-dark: #222222; /* Main background */
-  --pm-bg-light: #2d2d2d; /* Lighter background for panels/inputs */
-  --pm-bg-lighter: #3c3c3c; /* Even lighter for hover states, active tabs */
-  --pm-text-primary: #f2f2f2; /* Main text color */
-  --pm-text-secondary: #aaaaaa; /* Secondary text, placeholders */
-  --pm-border: #444444; /* Borders and dividers */
-  --pm-accent-blue: #007bff; /* Primary accent for buttons, active state */
-  --pm-accent-blue-hover: #0056b3; /* Darker blue on hover */
-  --pm-method-get: #61affe; /* GET method color */
-  --pm-method-post: #49cc90; /* POST method color */
-  --pm-method-put: #fca130; /* PUT method color */
-  --pm-method-patch: #50e3c2; /* PATCH method color */
-  --pm-method-delete: #f93e3e; /* DELETE method color */
-  --pm-success: #28a745; /* Success status */
-  --pm-error: #dc3545; /* Error status */
-  --pm-info: #17a2b8; /* Info status */
+  --pm-bg-dark: #222222;
+  --pm-bg-light: #2d2d2d; 
+  --pm-bg-lighter: #3c3c3c; 
+  --pm-text-primary: #f2f2f2; 
+  --pm-text-secondary: #aaaaaa; 
+  --pm-border: #444444;
+  --pm-accent-blue: #007bff; 
+  --pm-accent-blue-hover: #0056b3; 
+  --pm-method-get: #61affe; 
+  --pm-method-post: #49cc90;
+  --pm-method-put: #fca130; 
+  --pm-method-patch: #50e3c2;
+  --pm-method-delete: #f93e3e; 
+  --pm-success: #28a745; 
+  --pm-error: #dc3545; 
+  --pm-info: #17a2b8; 
 
-  /* VS Code Theme Variables (fallback for good measure where not overridden) */
   --vscode-editor-background: var(--pm-bg-dark);
   --vscode-editor-foreground: var(--pm-text-primary);
   --vscode-input-background: var(--pm-bg-light);
@@ -46,12 +43,11 @@
   --vscode-terminal-ansiRed: var(--pm-error);
 }
 
-/* General Reset and Base Styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif; /* Postman uses Inter or similar */
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif; 
 }
 
 body {
@@ -61,36 +57,33 @@ body {
   line-height: 1.5;
   display: flex;
   height: 100vh;
-  overflow: hidden; /* Prevent body scroll */
+  overflow: hidden; 
 }
 
-/* Main Container - Flexbox for sidebar and main content */
 .container {
   display: flex;
   width: 100%;
   height: 100%;
 }
 
-/* Sidebar */
 .sidebar {
   width: 280px;
-  min-width: 280px; /* Important for transition */
+  min-width: 280px;
   background-color: var(--pm-bg-dark);
   border-right: 1px solid var(--pm-border);
   display: flex;
   flex-direction: column;
   padding: 15px;
-  overflow-y: auto; /* Scrollable history */
-  flex-shrink: 0; /* Prevent shrinking below min-width */
-  transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out, padding 0.3s ease-in-out; /* Smooth collapse/expand */
+  overflow-y: auto; 
+  flex-shrink: 0; 
+  transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out, padding 0.3s ease-in-out; 
 }
 
-/* Collapsed Sidebar State */
 .container.sidebar-collapsed .sidebar {
-    width: 50px; /* Slightly wider to ensure button is clickable */
+    width: 50px;
     min-width: 50px;
-    padding: 15px 5px; /* Keep vertical padding, reduce horizontal */
-    border-right: 1px solid var(--pm-border); /* Keep border for visual separation */
+    padding: 15px 5px; 
+    border-right: 1px solid var(--pm-border);
 }
 
 .sidebar-header {
@@ -100,11 +93,10 @@ body {
   padding-bottom: 15px;
   margin-bottom: 10px;
   border-bottom: 1px solid var(--pm-border);
-  flex-shrink: 0; /* Prevent header from shrinking */
-  white-space: nowrap; /* Prevent "History" from wrapping */
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-/* Hide header text and new request button when collapsed */
 .container.sidebar-collapsed .sidebar-header h2 {
     display: none;
 }
@@ -113,7 +105,6 @@ body {
     display: none;
 }
 
-/* Ensure toggle button remains visible and centered when collapsed */
 .container.sidebar-collapsed .sidebar-header {
     justify-content: center;
     border-bottom: none;
@@ -130,11 +121,11 @@ body {
 
 .sidebar-actions {
     display: flex;
-    gap: 8px; /* Space between action buttons */
+    gap: 8px;
 }
 
 .new-request-btn, .toggle-sidebar-btn {
-  background-color: transparent; /* No background for these buttons */
+  background-color: transparent;
   color: var(--pm-text-primary);
   border: none;
   border-radius: 4px;
@@ -143,10 +134,10 @@ body {
   font-size: 1.2em;
   line-height: 1;
   transition: background-color 0.2s ease, color 0.2s ease;
-  display: flex; /* For SVG alignment */
+  display: flex; 
   align-items: center;
   justify-content: center;
-  min-width: 28px; /* Ensure minimum clickable area */
+  min-width: 28px; 
   min-height: 28px;
 }
 
@@ -155,11 +146,9 @@ body {
   color: var(--pm-accent-blue);
 }
 .new-request-btn svg, .toggle-sidebar-btn svg {
-  fill: currentColor; /* Use text color for SVG */
+  fill: currentColor; 
 }
 
-/* --- ICON DISPLAY LOGIC --- */
-/* By default, hide the expand icon and show the collapse icon */
 .toggle-sidebar-btn .collapse-icon {
     display: block;
 }
@@ -167,24 +156,21 @@ body {
     display: none;
 }
 
-/* When sidebar is collapsed, hide the collapse icon and show the expand icon */
 .container.sidebar-collapsed .toggle-sidebar-btn .collapse-icon {
     display: none;
 }
 .container.sidebar-collapsed .toggle-sidebar-btn .expand-icon {
     display: block;
 }
-/* --- END ICON DISPLAY LOGIC --- */
 
 
 .request-list {
   flex-grow: 1;
-  /* Hide list content when collapsed */
   transition: opacity 0.3s ease-in-out;
 }
 
 .container.sidebar-collapsed .request-list {
-    display: none; /* Completely hide to prevent any interaction */
+    display: none;
 }
 
 
@@ -207,7 +193,7 @@ body {
 }
 
 .request-item.active {
-  background-color: var(--pm-accent-blue); /* Postman uses blue for active item */
+  background-color: var(--pm-accent-blue); 
   color: var(--pm-text-primary);
 }
 
@@ -228,7 +214,7 @@ body {
   opacity: 0;
   transition: opacity 0.2s ease, color 0.2s ease;
   flex-shrink: 0;
-  width: 20px; /* Fixed width for consistent alignment */
+  width: 20px; 
   height: 20px;
   display: flex;
   align-items: center;
@@ -242,27 +228,23 @@ body {
 
 .request-item .delete-btn:hover {
   color: var(--pm-error);
-  background-color: rgba(255,0,0,0.2); /* Light red background on hover */
+  background-color: rgba(255,0,0,0.2); 
   border-radius: 3px;
 }
 
-
-/* Main Content Area */
 .main-content {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   background-color: var(--pm-bg-light);
-  padding: 15px; /* Consistent padding */
-  transition: margin-left 0.3s ease-in-out; /* Shift when sidebar collapses */
+  padding: 15px;
+  transition: margin-left 0.3s ease-in-out;
 }
 
-/* Adjust main content margin when sidebar collapses */
 .container.sidebar-collapsed .main-content {
-    margin-left: 0; /* No gap when sidebar is hidden */
+    margin-left: 0; 
 }
 
-/* NEW: Request Name Input */
 .request-name-input {
     width: 100%;
     background-color: var(--pm-bg-lighter);
@@ -272,14 +254,13 @@ body {
     padding: 8px 10px;
     font-size: 0.9em;
     outline: none;
-    margin-bottom: 10px; /* Space below name input */
+    margin-bottom: 10px; 
 }
 .request-name-input:focus {
     border-color: var(--pm-accent-blue);
 }
 
 
-/* Request Section */
 .request-section {
   background-color: var(--pm-bg-light);
   border: 1px solid var(--pm-border);
@@ -305,21 +286,20 @@ body {
   outline: none;
   cursor: pointer;
   min-width: 90px;
-  text-align: center; /* Center text in dropdown */
-  appearance: none; /* Remove default arrow */
+  text-align: center; 
+  appearance: none; 
   -webkit-appearance: none;
   -moz-appearance: none;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="%23f2f2f2" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>'); /* Custom arrow */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="%23f2f2f2" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>'); 
   background-repeat: no-repeat;
   background-position: right 8px center;
-  padding-right: 25px; /* Make space for custom arrow */
+  padding-right: 25px;
 }
 
 .method-select:focus {
   border-color: var(--pm-accent-blue);
 }
 
-/* Specific colors for methods in dropdown */
 .method-select option[value="GET"] { color: var(--pm-method-get); }
 .method-select option[value="POST"] { color: var(--pm-method-post); }
 .method-select option[value="PUT"] { color: var(--pm-method-put); }
@@ -347,7 +327,7 @@ body {
   color: var(--pm-text-primary);
   border: none;
   border-radius: 4px;
-  padding: 8px 20px; /* Slightly more padding */
+  padding: 8px 20px; 
   font-size: 0.9em;
   font-weight: 500;
   cursor: pointer;
@@ -358,18 +338,17 @@ body {
   background-color: var(--pm-accent-blue-hover);
 }
 
-/* Tab Controls */
 .tab-controls {
   display: flex;
   border-bottom: 1px solid var(--pm-border);
-  margin-bottom: 10px; /* Space between tabs and panel */
+  margin-bottom: 10px; 
 }
 
 .tab-button {
   background-color: transparent;
   color: var(--pm-text-secondary);
   border: none;
-  padding: 10px 18px; /* More padding for tab buttons */
+  padding: 10px 18px; 
   cursor: pointer;
   font-size: 0.9em;
   font-weight: 500;
@@ -385,19 +364,17 @@ body {
 .tab-button.active {
   background-color: var(--pm-bg-light);
   color: var(--pm-text-primary);
-  border-bottom-color: var(--pm-accent-blue); /* Active tab indicator */
+  border-bottom-color: var(--pm-accent-blue);
   font-weight: 600;
 }
 
-/* Tab Panels (Body, Headers, Params, Auth, Env) */
 .tab-panel {
-  padding-top: 5px; /* Small gap */
-  background-color: var(--pm-bg-light); /* Match active tab background */
+  padding-top: 5px;
+  background-color: var(--pm-bg-light); 
   border-radius: 0 0 4px 4px;
-  min-height: 200px; /* Give panels a minimum height */
+  min-height: 200px; 
 }
 
-/* Header for textareas with format/copy buttons */
 .textarea-header {
     display: flex;
     justify-content: space-between;
@@ -412,22 +389,20 @@ body {
     gap: 5px;
 }
 
-/* Icon Buttons (Format, Copy) */
 .icon-button {
     background-color: transparent;
     border: none;
     color: var(--pm-text-secondary);
-    /* Make buttons square and slightly larger */
-    width: 30px; /* Fixed width */
-    height: 30px; /* Fixed height */
-    border-radius: 4px; /* Square with slight rounding */
+    width: 30px; 
+    height: 30px; 
+    border-radius: 4px; 
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease; /* Add transform for animation */
-    position: relative; /* For icon positioning */
-    overflow: hidden; /* Hide overflowing icon during transition */
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease; 
+    position: relative; 
+    overflow: hidden; 
 }
 
 .icon-button:hover {
@@ -437,44 +412,42 @@ body {
 .icon-button svg {
     stroke: currentColor;
     fill: none;
-    position: absolute; /* Position icons for transition */
+    position: absolute; 
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    transition: opacity 0.3s ease, transform 0.3s ease; /* Animate icon opacity and position */
-    width: 18px; /* Slightly larger icon size for better visibility */
-    height: 18px; /* Slightly larger icon size for better visibility */
+    transition: opacity 0.3s ease, transform 0.3s ease; 
+    width: 18px; 
+    height: 18px; 
 }
 
-/* Hidden class for toggling icons */
 .hidden {
   display: none;
   opacity: 0;
-  pointer-events: none; /* Prevent interaction when hidden */
+  pointer-events: none;
 }
 
-/* Animation for copied state */
 .copy-button.copied-active {
-    background-color: var(--pm-success); /* Green background on copy */
-    color: var(--pm-text-primary); /* White icon */
-    transform: scale(1.05); /* Slight pop effect */
+    background-color: var(--pm-success); 
+    color: var(--pm-text-primary);
+    transform: scale(1.05); 
 }
 
 .copy-button.copied-active .copy-icon {
     opacity: 0;
-    transform: translate(-50%, -150%); /* Move copy icon out */
+    transform: translate(-50%, -150%);
 }
 
 .copy-button.copied-active .check-icon {
     opacity: 1;
-    transform: translate(-50%, -50%); /* Move check icon in */
+    transform: translate(-50%, -50%);
 }
 
 
 .code-input {
   width: 100%;
   height: 200px;
-  background-color: var(--pm-bg-dark); /* Darker background for code input */
+  background-color: var(--pm-bg-dark);
   color: var(--pm-text-primary);
   border: 1px solid var(--pm-border);
   border-radius: 4px;
@@ -483,7 +456,7 @@ body {
   font-size: 0.9em;
   resize: vertical;
   outline: none;
-  line-height: 1.4; /* Better readability for code */
+  line-height: 1.4; 
 }
 
 .code-input:focus {
@@ -491,13 +464,12 @@ body {
 }
 
 
-/* NEW: Key-Value Container (for Params) */
 .key-value-container {
     padding: 5px;
-    background-color: var(--pm-bg-dark); /* Darker background for key-value inputs */
+    background-color: var(--pm-bg-dark); 
     border: 1px solid var(--pm-border);
     border-radius: 4px;
-    max-height: 160px; /* Limit height for scrolling */
+    max-height: 160px; 
     overflow-y: auto;
     margin-bottom: 10px;
 }
@@ -510,11 +482,11 @@ body {
 }
 
 .key-value-row:last-child {
-    margin-bottom: 0; /* No margin for the last row */
+    margin-bottom: 0; 
 }
 
 .key-value-row input[type="text"] {
-    flex: 1; /* Both key and value inputs take equal space */
+    flex: 1; 
     background-color: var(--pm-bg-light);
     color: var(--pm-text-primary);
     border: 1px solid var(--pm-border);
@@ -566,7 +538,6 @@ body {
 }
 
 
-/* NEW: Auth Section */
 .auth-section {
     background-color: var(--pm-bg-dark);
     border: 1px solid var(--pm-border);
@@ -575,7 +546,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-height: 180px; /* Give Auth panel some height too */
+    min-height: 180px; 
 }
 .auth-section label {
     color: var(--pm-text-secondary);
@@ -610,7 +581,6 @@ body {
 }
 
 
-/* Response Section */
 .response-section {
   flex-grow: 1;
   display: flex;
@@ -625,7 +595,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--pm-bg-dark); /* Darker background for response header */
+  background-color: var(--pm-bg-dark); 
   padding: 8px 15px;
   border-bottom: 1px solid var(--pm-border);
 }
@@ -637,11 +607,11 @@ body {
 }
 
 .response-meta {
-  font-size: 0.8em; /* Slightly smaller text */
+  font-size: 0.8em; 
   color: var(--pm-text-secondary);
   display: flex;
-  gap: 15px; /* Spacing between meta items */
-  align-items: center; /* Align items vertically */
+  gap: 15px;
+  align-items: center; 
 }
 
 .status-code-success {
@@ -658,61 +628,59 @@ body {
     color: var(--pm-text-secondary);
 }
 
-/* Clear Response Button Styles */
 .clear-response-btn {
     background-color: transparent;
-    color: var(--pm-text-secondary); /* Match other icons */
+    color: var(--pm-text-secondary); 
     border: none;
     border-radius: 4px;
-    padding: 3px; /* Smaller padding for a tighter fit */
+    padding: 3px;
     cursor: pointer;
-    font-size: 1em; /* Adjust size if needed */
+    font-size: 1em; 
     line-height: 1;
     transition: background-color 0.2s ease, color 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 10px; /* Space from other meta info */
+    margin-left: 10px; 
 }
 
 .clear-response-btn:hover {
     background-color: var(--pm-bg-lighter);
-    color: var(--pm-error); /* Red on hover to signify clear/delete */
+    color: var(--pm-error); 
 }
 .clear-response-btn svg {
-    fill: none; /* Make sure fill is none for stroke icons */
-    stroke: currentColor; /* Use text color for stroke */
+    fill: none; 
+    stroke: currentColor; 
 }
 
-/* Specific styles for response tabs */
 .response-tab-controls {
     border-bottom: 1px solid var(--pm-border);
-    margin-bottom: 0; /* Remove margin, response panels handle it */
-    background-color: var(--pm-bg-light); /* Ensure consistent background */
-    padding-top: 5px; /* Visual separation from response header */
+    margin-bottom: 0; 
+    background-color: var(--pm-bg-light); 
+    padding-top: 5px; 
 }
 
 .response-panel {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    padding-top: 0; /* No top padding as header is inside */
+    padding-top: 0; 
     border-radius: 0 0 4px 4px;
 }
 
 .response-panel-header {
     display: flex;
-    justify-content: flex-end; /* Push buttons to the right */
+    justify-content: flex-end; 
     align-items: center;
     padding: 5px 10px;
-    background-color: var(--pm-bg-dark); /* Darker background for response panel header */
+    background-color: var(--pm-bg-dark); 
     border-bottom: 1px solid var(--pm-border);
-    flex-shrink: 0; /* Prevent header from shrinking */
+    flex-shrink: 0; 
 }
 
 .code-output {
   flex-grow: 1;
-  background-color: var(--pm-bg-dark); /* Darker background for output */
+  background-color: var(--pm-bg-dark); 
   color: var(--pm-text-primary);
   padding: 15px;
   font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
