@@ -1,100 +1,103 @@
-
 :root {
-  --pm-bg-dark: #222222;
-  --pm-bg-light: #2d2d2d; 
-  --pm-bg-lighter: #3c3c3c; 
-  --pm-text-primary: #f2f2f2; 
-  --pm-text-secondary: #aaaaaa; 
-  --pm-border: #444444;
-  --pm-accent-blue: #007bff; 
-  --pm-accent-blue-hover: #0056b3; 
-  --pm-method-get: #61affe; 
-  --pm-method-post: #49cc90;
-  --pm-method-put: #fca130; 
-  --pm-method-patch: #50e3c2;
-  --pm-method-delete: #f93e3e; 
-  --pm-success: #28a745; 
-  --pm-error: #dc3545; 
-  --pm-info: #17a2b8; 
+    /* Postman-inspired Dark Theme Colors */
+    --pm-dark-bg: #282828; /* Main Dark Background (similar to Postman's dark theme) */
+    --pm-medium-bg: #333333; /* Slightly lighter background for cards/panels */
+    --pm-light-bg: #3C3C3C; /* Even lighter for input fields, active states */
+    --pm-border-color: #4A4A4A; /* Darker border for separation */
+    --pm-text-primary: #DDDDDD; /* Light text for main content */
+    --pm-text-secondary: #AAAAAA; /* Gray text for labels, descriptions */
+    --pm-text-disabled: #777777; /* For disabled elements */
+    --pm-accent-blue: #007ACC; /* Postman's primary blue */
+    --pm-accent-blue-hover: #00609E; /* Darker blue for hover */
+    --pm-success-green: #28A745; /* Green for success (e.g., 200 OK) */
+    --pm-error-red: #DC3545; /* Red for errors (e.g., 400 Bad Request) */
+    --pm-warning-orange: #FFC107; /* Orange for warnings */
+    --pm-info-blue: #17A2B8; /* Info blue */
 
-  --vscode-editor-background: var(--pm-bg-dark);
-  --vscode-editor-foreground: var(--pm-text-primary);
-  --vscode-input-background: var(--pm-bg-light);
-  --vscode-input-foreground: var(--pm-text-primary);
-  --vscode-input-border: var(--pm-border);
-  --vscode-button-background: var(--pm-accent-blue);
-  --vscode-button-foreground: var(--pm-text-primary);
-  --vscode-button-hoverBackground: var(--pm-accent-blue-hover);
-  --vscode-focusBorder: var(--pm-accent-blue);
-  --vscode-sideBar-background: var(--pm-bg-dark);
-  --vscode-sideBar-foreground: var(--pm-text-primary);
-  --vscode-list-activeSelectionBackground: var(--pm-bg-lighter);
-  --vscode-list-activeSelectionForeground: var(--pm-text-primary);
-  --vscode-list-hoverBackground: var(--pm-bg-lighter);
-  --vscode-list-inactiveSelectionBackground: transparent;
-  --vscode-list-inactiveSelectionForeground: var(--pm-text-primary);
-  --vscode-editorGroupHeader-tabsBackground: var(--pm-bg-dark);
-  --vscode-editorGroup-border: var(--pm-border);
-  --vscode-panel-background: var(--pm-bg-light);
-  --vscode-panelTitle-activeForeground: var(--pm-text-primary);
-  --vscode-panelTitle-inactiveForeground: var(--pm-text-secondary);
-  --vscode-errorForeground: var(--pm-error);
-  --vscode-terminal-ansiGreen: var(--pm-success);
-  --vscode-terminal-ansiRed: var(--pm-error);
+    /* Method colors - inspired by Postman's colored tags */
+    --pm-method-get: #61AFEF;    /* Similar to VS Code Blue/Postman GET */
+    --pm-method-post: #98C379;   /* Similar to VS Code Green/Postman POST */
+    --pm-method-put: #E5C07B;    /* Similar to VS Code Yellow/Postman PUT */
+    --pm-method-patch: #C678DD;  /* Similar to VS Code Purple/Postman PATCH */
+    --pm-method-delete: #E06C75; /* Similar to VS Code Red/Postman DELETE */
+
+    /* Code editor specific colors (for `pre` and `textarea`) */
+    --pm-code-bg: #212121; /* Even darker background for code areas */
+    --pm-code-text: #F8F8F8; /* Light text for code */
+    /* Syntax highlighting colors can be added here if you're using a JS library */
+
+    /* Fonts */
+    --pm-font-body: 'Inter', sans-serif;
+    --pm-font-code: 'JetBrains Mono', monospace;
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif; 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--pm-font-body);
 }
 
 body {
-  background-color: var(--pm-bg-dark);
-  color: var(--pm-text-primary);
-  font-size: 14px;
-  line-height: 1.5;
-  display: flex;
-  height: 100vh;
-  overflow: hidden; 
+    background-color: var(--pm-dark-bg);
+    color: var(--pm-text-primary);
+    font-size: 14px; /* Standard Postman-like font size */
+    line-height: 1.5;
+    display: flex;
+    height: 100vh; /* Make body take full viewport height */
+    overflow: hidden; /* Hide body scrollbar, main container handles overflow */
 }
 
+/* --- General UI Enhancements --- */
 .container {
-  display: flex;
-  width: 100%;
-  height: 100%;
+    display: flex;
+    width: 100%;
+    height: 100%; /* Take full height of body */
+    overflow: hidden; /* Main content handles its own scroll, sidebar too */
 }
 
+.card {
+    background-color: var(--pm-medium-bg);
+    border: 1px solid var(--pm-border-color);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    padding: 18px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Crucial for flex items to shrink */
+    flex-shrink: 1; /* Allow cards to shrink */
+}
+
+/* --- Sidebar --- */
 .sidebar {
-  width: 280px;
-  min-width: 280px;
-  background-color: var(--pm-bg-dark);
-  border-right: 1px solid var(--pm-border);
-  display: flex;
-  flex-direction: column;
-  padding: 15px;
-  overflow-y: auto; 
-  flex-shrink: 0; 
-  transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out, padding 0.3s ease-in-out; 
+    width: 260px;
+    min-width: 260px;
+    background-color: var(--pm-dark-bg);
+    border-right: 1px solid var(--pm-border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    overflow-y: auto; /* Sidebar itself should scroll */
+    flex-shrink: 0;
+    transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out, padding 0.3s ease-in-out;
 }
 
 .container.sidebar-collapsed .sidebar {
     width: 50px;
     min-width: 50px;
-    padding: 15px 5px; 
-    border-right: 1px solid var(--pm-border);
+    padding: 15px 8px;
 }
 
 .sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 15px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid var(--pm-border);
-  flex-shrink: 0;
-  white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--pm-border-color);
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .container.sidebar-collapsed .sidebar-header h2 {
@@ -102,7 +105,16 @@ body {
 }
 
 .container.sidebar-collapsed .new-request-btn {
-    display: none;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    margin-right: -8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.container.sidebar-collapsed .sidebar-actions {
+    justify-content: center;
+    width: 100%;
 }
 
 .container.sidebar-collapsed .sidebar-header {
@@ -113,40 +125,45 @@ body {
 }
 
 .sidebar-header h2 {
-  font-size: 1.1em;
-  color: var(--pm-text-primary);
-  font-weight: 500;
-  transition: opacity 0.3s, width 0.3s;
+    font-size: 1.1em;
+    color: var(--pm-text-primary);
+    font-weight: 600;
+    transition: opacity 0.3s, width 0.3s;
 }
 
 .sidebar-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .new-request-btn, .toggle-sidebar-btn {
-  background-color: transparent;
-  color: var(--pm-text-primary);
-  border: none;
-  border-radius: 4px;
-  padding: 5px;
-  cursor: pointer;
-  font-size: 1.2em;
-  line-height: 1;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  display: flex; 
-  align-items: center;
-  justify-content: center;
-  min-width: 28px; 
-  min-height: 28px;
+    background-color: transparent;
+    color: var(--pm-text-secondary);
+    border: none;
+    border-radius: 4px;
+    padding: 7px;
+    cursor: pointer;
+    font-size: 1.2em;
+    line-height: 1;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    min-height: 30px;
 }
 
 .new-request-btn:hover, .toggle-sidebar-btn:hover {
-  background-color: var(--pm-bg-lighter);
-  color: var(--pm-accent-blue);
+    background-color: var(--pm-light-bg);
+    color: var(--pm-accent-blue);
+    transform: translateY(-1px);
 }
+.new-request-btn:active, .toggle-sidebar-btn:active {
+    transform: translateY(0);
+}
+
 .new-request-btn svg, .toggle-sidebar-btn svg {
-  fill: currentColor; 
+    fill: currentColor;
 }
 
 .toggle-sidebar-btn .collapse-icon {
@@ -163,274 +180,308 @@ body {
     display: block;
 }
 
-
 .request-list {
-  flex-grow: 1;
-  transition: opacity 0.3s ease-in-out;
+    flex-grow: 1;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .container.sidebar-collapsed .request-list {
     display: none;
 }
 
-
 .request-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: transparent;
-  padding: 8px 10px;
-  margin-bottom: 5px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  overflow: hidden;
-  font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: transparent;
+    padding: 8px 10px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    overflow: hidden;
+    font-size: 0.9em;
+    color: var(--pm-text-secondary);
 }
 
 .request-item:hover {
-  background-color: var(--pm-bg-lighter);
+    background-color: var(--pm-light-bg);
+    transform: translateY(-1px);
+    color: var(--pm-text-primary);
 }
 
 .request-item.active {
-  background-color: var(--pm-accent-blue); 
-  color: var(--pm-text-primary);
+    background-color: var(--pm-accent-blue);
+    color: #FFFFFF;
+    font-weight: 500;
+    box-shadow: 0 1px 4px rgba(0, 122, 204, 0.4);
 }
 
 .request-item span {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-grow: 1;
-  padding-right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    padding-right: 8px;
 }
 
 .request-item .delete-btn {
-  background: transparent;
-  border: none;
-  color: var(--pm-text-secondary);
-  font-size: 0.9em;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s ease, color 0.2s ease;
-  flex-shrink: 0;
-  width: 20px; 
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--pm-text-disabled);
+    font-size: 0.9em;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
 }
 
 .request-item:hover .delete-btn,
 .request-item.active .delete-btn {
-  opacity: 1;
+    opacity: 1;
 }
 
 .request-item .delete-btn:hover {
-  color: var(--pm-error);
-  background-color: rgba(255,0,0,0.2); 
-  border-radius: 3px;
+    color: var(--pm-error-red);
+    background-color: rgba(220,53,69,0.2);
 }
 
+/* --- Main Content --- */
 .main-content {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--pm-bg-light);
-  padding: 15px;
-  transition: margin-left 0.3s ease-in-out;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--pm-medium-bg);
+    padding: 20px;
+    gap: 15px; /* Spacing between request and response sections */
+    overflow-y: auto; /* Allow main content to scroll if its children overflow */
+    min-width: 0; /* Crucial for flex item to prevent overflow */
 }
 
-.container.sidebar-collapsed .main-content {
-    margin-left: 0; 
+/* Request Section - now acts as a single card that expands */
+.request-section {
+    flex-grow: 0; /* Don't want this to grow unless necessary, let response grow more */
+    flex-shrink: 0; /* This section should maintain its height if possible */
+    display: flex;
+    flex-direction: column;
+    min-height: fit-content; /* Allow content to dictate min-height, then shrink if forced */
+    margin-bottom: 0; /* Removed margin-bottom here, using gap in main-content */
 }
 
 .request-name-input {
     width: 100%;
-    background-color: var(--pm-bg-lighter);
+    background-color: var(--pm-light-bg);
     color: var(--pm-text-primary);
-    border: 1px solid var(--pm-border);
+    border: 1px solid var(--pm-border-color);
     border-radius: 4px;
-    padding: 8px 10px;
-    font-size: 0.9em;
+    padding: 9px 12px;
+    font-size: 0.95em;
     outline: none;
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    flex-shrink: 0; /* Prevent from shrinking */
 }
 .request-name-input:focus {
     border-color: var(--pm-accent-blue);
-}
-
-
-.request-section {
-  background-color: var(--pm-bg-light);
-  border: 1px solid var(--pm-border);
-  border-radius: 4px;
-  padding: 15px;
-  margin-bottom: 15px;
+    box-shadow: 0 0 0 1px var(--pm-accent-blue);
 }
 
 .request-line {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 15px;
-  align-items: center;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+    align-items: center;
+    flex-shrink: 0; /* Prevent this line from shrinking */
 }
 
 .method-select {
-  background-color: var(--pm-bg-lighter);
-  color: var(--pm-text-primary);
-  border: 1px solid var(--pm-border);
-  border-radius: 4px;
-  padding: 8px 10px;
-  font-size: 0.9em;
-  outline: none;
-  cursor: pointer;
-  min-width: 90px;
-  text-align: center; 
-  appearance: none; 
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="%23f2f2f2" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>'); 
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  padding-right: 25px;
+    background-color: var(--pm-light-bg);
+    color: var(--pm-text-primary);
+    border: 1px solid var(--pm-border-color);
+    border-radius: 4px;
+    padding: 9px 12px;
+    font-size: 0.95em;
+    outline: none;
+    cursor: pointer;
+    min-width: 90px;
+    text-align: center;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%23AAAAAA" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 25px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    flex-shrink: 0; /* Prevent from shrinking */
 }
 
 .method-select:focus {
-  border-color: var(--pm-accent-blue);
+    border-color: var(--pm-accent-blue);
+    box-shadow: 0 0 0 1px var(--pm-accent-blue);
 }
 
-.method-select option[value="GET"] { color: var(--pm-method-get); }
-.method-select option[value="POST"] { color: var(--pm-method-post); }
-.method-select option[value="PUT"] { color: var(--pm-method-put); }
-.method-select option[value="PATCH"] { color: var(--pm-method-patch); }
-.method-select option[value="DELETE"] { color: var(--pm-method-delete); }
+/* Method specific colors - ensure contrast */
+.method-select option[value="GET"] { color: var(--pm-method-get); font-weight: 500; }
+.method-select option[value="POST"] { color: var(--pm-method-post); font-weight: 500; }
+.method-select option[value="PUT"] { color: var(--pm-method-put); font-weight: 500; }
+.method-select option[value="PATCH"] { color: var(--pm-method-patch); font-weight: 500; }
+.method-select option[value="DELETE"] { color: var(--pm-method-delete); font-weight: 500; }
 
 
 .url-input {
-  flex-grow: 1;
-  background-color: var(--pm-bg-lighter);
-  color: var(--pm-text-primary);
-  border: 1px solid var(--pm-border);
-  border-radius: 4px;
-  padding: 8px 10px;
-  font-size: 0.9em;
-  outline: none;
+    flex-grow: 1;
+    background-color: var(--pm-light-bg);
+    color: var(--pm-text-primary);
+    border: 1px solid var(--pm-border-color);
+    border-radius: 4px;
+    padding: 9px 12px;
+    font-size: 0.95em;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    min-width: 100px; /* Ensure it has a minimum width */
 }
 
 .url-input:focus {
-  border-color: var(--pm-accent-blue);
+    border-color: var(--pm-accent-blue);
+    box-shadow: 0 0 0 1px var(--pm-accent-blue);
 }
 
 .send-button {
-  background-color: var(--pm-accent-blue);
-  color: var(--pm-text-primary);
-  border: none;
-  border-radius: 4px;
-  padding: 8px 20px; 
-  font-size: 0.9em;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+    background-color: var(--pm-accent-blue);
+    color: var(--pm-text-primary);
+    border: none;
+    border-radius: 4px;
+    padding: 9px 20px;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 5px rgba(0, 122, 204, 0.4);
+    flex-shrink: 0;
 }
 
 .send-button:hover {
-  background-color: var(--pm-accent-blue-hover);
+    background-color: var(--pm-accent-blue-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 7px rgba(0, 122, 204, 0.5);
+}
+.send-button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(0, 122, 204, 0.3);
 }
 
 .tab-controls {
-  display: flex;
-  border-bottom: 1px solid var(--pm-border);
-  margin-bottom: 10px; 
+    display: flex;
+    border-bottom: 1px solid var(--pm-border-color);
+    margin-bottom: 15px;
+    flex-shrink: 0; /* Prevent tabs from shrinking */
 }
 
 .tab-button {
-  background-color: transparent;
-  color: var(--pm-text-secondary);
-  border: none;
-  padding: 10px 18px; 
-  cursor: pointer;
-  font-size: 0.9em;
-  font-weight: 500;
-  border-radius: 4px 4px 0 0;
-  border-bottom: 2px solid transparent;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    background-color: transparent;
+    color: var(--pm-text-secondary);
+    border: none;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    border-radius: 4px 4px 0 0;
+    border-bottom: 2px solid transparent;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .tab-button:hover {
-  background-color: var(--pm-bg-lighter);
+    background-color: var(--pm-light-bg);
+    color: var(--pm-text-primary);
 }
 
 .tab-button.active {
-  background-color: var(--pm-bg-light);
-  color: var(--pm-text-primary);
-  border-bottom-color: var(--pm-accent-blue);
-  font-weight: 600;
+    background-color: var(--pm-medium-bg);
+    color: var(--pm-text-primary);
+    border-bottom-color: var(--pm-accent-blue);
+    font-weight: 600;
 }
 
-.tab-panel {
-  padding-top: 5px;
-  background-color: var(--pm-bg-light); 
-  border-radius: 0 0 4px 4px;
-  min-height: 200px; 
+/* Ensure tab panels fill height inside their card */
+.card .tab-panel { /* Specificity for tab panels within .card */
+    padding-top: 10px;
+    background-color: var(--pm-medium-bg);
+    border-radius: 0 0 6px 6px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Important for containing scrolling children like code-input */
+    flex-grow: 1; /* Make tab panels grow within their parent card */
+    min-height: 0; /* Allow tab panels to shrink below content size */
 }
 
 .textarea-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 5px 5px 5px;
+    padding: 0 5px 8px 5px;
     color: var(--pm-text-secondary);
     font-size: 0.85em;
+    font-weight: 500;
+    flex-shrink: 0;
 }
 
 .textarea-actions {
     display: flex;
-    gap: 5px;
+    gap: 6px;
 }
 
 .icon-button {
     background-color: transparent;
     border: none;
     color: var(--pm-text-secondary);
-    width: 30px; 
-    height: 30px; 
-    border-radius: 4px; 
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease; 
-    position: relative; 
-    overflow: hidden; 
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .icon-button:hover {
-    background-color: var(--pm-bg-lighter);
+    background-color: var(--pm-light-bg);
     color: var(--pm-accent-blue);
+    transform: translateY(-1px);
 }
+.icon-button:active {
+    transform: translateY(0);
+}
+
 .icon-button svg {
     stroke: currentColor;
     fill: none;
-    position: absolute; 
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    transition: opacity 0.3s ease, transform 0.3s ease; 
-    width: 18px; 
-    height: 18px; 
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    width: 18px;
+    height: 18px;
 }
 
 .hidden {
-  display: none;
-  opacity: 0;
-  pointer-events: none;
+    display: none !important; /* Use !important to override any other display properties */
 }
 
 .copy-button.copied-active {
-    background-color: var(--pm-success); 
+    background-color: var(--pm-success-green);
     color: var(--pm-text-primary);
-    transform: scale(1.05); 
+    transform: scale(1.05);
 }
 
 .copy-button.copied-active .copy-icon {
@@ -445,55 +496,60 @@ body {
 
 
 .code-input {
-  width: 100%;
-  height: 200px;
-  background-color: var(--pm-bg-dark);
-  color: var(--pm-text-primary);
-  border: 1px solid var(--pm-border);
-  border-radius: 4px;
-  padding: 10px;
-  font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
-  font-size: 0.9em;
-  resize: vertical;
-  outline: none;
-  line-height: 1.4; 
+    width: 100%;
+    background-color: var(--pm-code-bg);
+    color: var(--pm-code-text);
+    border: 1px solid var(--pm-border-color);
+    border-radius: 4px;
+    padding: 10px;
+    font-family: var(--pm-font-code);
+    font-size: 0.85em;
+    resize: vertical;
+    outline: none;
+    line-height: 1.4;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    flex-grow: 1; /* Allow code-input to grow/shrink */
+    min-height: 50px; /* Smallest it can be */
+    overflow: auto; /* Ensure code input is scrollable if content overflows */
 }
 
 .code-input:focus {
-  border-color: var(--pm-accent-blue);
+    border-color: var(--pm-accent-blue);
+    box-shadow: 0 0 0 1px var(--pm-accent-blue);
 }
 
-
 .key-value-container {
-    padding: 5px;
-    background-color: var(--pm-bg-dark); 
-    border: 1px solid var(--pm-border);
+    padding: 8px;
+    background-color: var(--pm-code-bg);
+    border: 1px solid var(--pm-border-color);
     border-radius: 4px;
-    max-height: 160px; 
+    max-height: 160px; /* Still constrain max height for params */
     overflow-y: auto;
     margin-bottom: 10px;
+    flex-shrink: 0;
 }
 
 .key-value-row {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
 .key-value-row:last-child {
-    margin-bottom: 0; 
+    margin-bottom: 0;
 }
 
 .key-value-row input[type="text"] {
-    flex: 1; 
-    background-color: var(--pm-bg-light);
+    flex: 1;
+    background-color: var(--pm-light-bg);
     color: var(--pm-text-primary);
-    border: 1px solid var(--pm-border);
+    border: 1px solid var(--pm-border-color);
     border-radius: 3px;
-    padding: 6px 8px;
+    padding: 7px 9px;
     font-size: 0.9em;
     outline: none;
+    transition: border-color 0.2s ease;
 }
 .key-value-row input[type="text"]:focus {
     border-color: var(--pm-accent-blue);
@@ -503,125 +559,173 @@ body {
     width: 16px;
     height: 16px;
     cursor: pointer;
+    accent-color: var(--pm-accent-blue);
 }
 
 .key-value-row .delete-key-value-btn {
     background: transparent;
     border: none;
-    color: var(--pm-text-secondary);
+    color: var(--pm-text-disabled);
+    font-size: 0.9em;
     cursor: pointer;
-    font-size: 1.1em;
-    padding: 3px;
-    border-radius: 3px;
-    transition: background-color 0.2s, color 0.2s;
+    opacity: 0;
+    transition: opacity 0.2s ease, color 0.2s ease, background-color 0.2s ease;
     flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
 }
 .key-value-row .delete-key-value-btn:hover {
-    background-color: rgba(255,0,0,0.2);
-    color: var(--pm-error);
+    background-color: rgba(220,53,69,0.2);
+    color: var(--pm-error-red);
 }
 
 .add-key-value-btn {
-    background-color: var(--pm-bg-lighter);
+    background-color: var(--pm-light-bg);
     color: var(--pm-text-primary);
-    border: 1px solid var(--pm-border);
+    border: 1px solid var(--pm-border-color);
     border-radius: 4px;
-    padding: 6px 12px;
+    padding: 7px 14px;
     font-size: 0.9em;
     cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+    font-weight: 500;
+    flex-shrink: 0;
 }
 .add-key-value-btn:hover {
     background-color: var(--pm-accent-blue);
     border-color: var(--pm-accent-blue);
-    color: var(--pm-text-primary);
+    color: #FFFFFF;
+    transform: translateY(-1px);
+}
+.add-key-value-btn:active {
+    transform: translateY(0);
 }
 
 
 .auth-section {
-    background-color: var(--pm-bg-dark);
-    border: 1px solid var(--pm-border);
+    background-color: var(--pm-code-bg);
+    border: 1px solid var(--pm-border-color);
     border-radius: 4px;
-    padding: 15px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    min-height: 180px; 
+    gap: 12px;
+    min-height: 180px;
+    flex-grow: 1;
+    min-height: 0;
 }
 .auth-section label {
     color: var(--pm-text-secondary);
     font-size: 0.9em;
+    font-weight: 500;
 }
 .auth-select, .auth-input {
     width: 100%;
-    background-color: var(--pm-bg-light);
+    background-color: var(--pm-light-bg);
     color: var(--pm-text-primary);
-    border: 1px solid var(--pm-border);
+    border: 1px solid var(--pm-border-color);
     border-radius: 4px;
-    padding: 8px 10px;
-    font-size: 0.9em;
+    padding: 9px 12px;
+    font-size: 0.95em;
     outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .auth-select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="%23f2f2f2" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%23AAAAAA" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
     background-position: right 8px center;
     padding-right: 25px;
 }
 .auth-select:focus, .auth-input:focus {
     border-color: var(--pm-accent-blue);
+    box-shadow: 0 0 0 1px var(--pm-accent-blue);
 }
 .auth-input-group {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
+}
+
+.env-description {
+    font-size: 0.85em;
+    color: var(--pm-text-secondary);
+    margin-bottom: 8px;
+    line-height: 1.4;
+    flex-shrink: 0;
 }
 
 
+/* --- Response Section (Targeting potential duplicates) --- */
 .response-section {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--pm-bg-light);
-  border: 1px solid var(--pm-border);
-  border-radius: 4px;
-  overflow: hidden;
+    flex-grow: 1; /* Allow it to take available space */
+    display: flex;
+    flex-direction: column;
+    background-color: var(--pm-medium-bg);
+    border: 1px solid var(--pm-border-color);
+    border-radius: 6px;
+    overflow: hidden; /* Important for containing scrolling children */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    min-height: 200px; /* Give it a reasonable minimum height */
+    /* If you somehow have two of these in HTML, this might cause layout issues. */
+    /* Ensure only ONE .response-section exists in your HTML. */
+    margin-top: 0; /* Remove specific margin-top here, let main-content gap handle it */
 }
+
+/* Aggressive hidden rule for any potential second response section if HTML is duplicated */
+/* IMPORTANT: If you want to hide a specific, *second* instance of a response section,
+   you would need a way to target it uniquely, e.g., an ID or a specific parent.
+   Without seeing your HTML, it's hard to be precise.
+   If your HTML truly has two `.response-section` elements, one *must* be hidden
+   or removed in the HTML itself. This CSS attempts to mitigate, but isn't a cure. */
+.main-content > .response-section:nth-child(even),
+.main-content > .response-section:nth-child(odd):not(:first-of-type) {
+    /* This rule tries to target any .response-section that isn't the *first* one
+       inside main-content. This is a hacky fix for duplicate HTML. */
+    /* display: none !important; */ /* Uncomment this if you *must* hide a duplicate via CSS */
+}
+
 
 .response-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--pm-bg-dark); 
-  padding: 8px 15px;
-  border-bottom: 1px solid var(--pm-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--pm-dark-bg);
+    padding: 8px 18px;
+    border-bottom: 1px solid var(--pm-border-color);
+    flex-shrink: 0;
 }
 
 .response-header h3 {
-  font-size: 1em;
-  color: var(--pm-text-primary);
-  font-weight: 600;
+    font-size: 1em;
+    color: var(--pm-text-primary);
+    font-weight: 600;
 }
 
 .response-meta {
-  font-size: 0.8em; 
-  color: var(--pm-text-secondary);
-  display: flex;
-  gap: 15px;
-  align-items: center; 
+    font-size: 0.8em;
+    color: var(--pm-text-secondary);
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.status-code {
+    font-weight: 600;
 }
 
 .status-code-success {
-  color: var(--pm-success);
-  font-weight: bold;
+    color: var(--pm-success-green);
 }
 
 .status-code-error {
-  color: var(--pm-error);
-  font-weight: bold;
+    color: var(--pm-error-red);
 }
 
 .response-time, .response-size {
@@ -630,63 +734,141 @@ body {
 
 .clear-response-btn {
     background-color: transparent;
-    color: var(--pm-text-secondary); 
+    color: var(--pm-text-secondary);
     border: none;
     border-radius: 4px;
-    padding: 3px;
+    padding: 5px;
     cursor: pointer;
-    font-size: 1em; 
+    font-size: 1em;
     line-height: 1;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 10px; 
+    margin-left: 10px;
 }
 
 .clear-response-btn:hover {
-    background-color: var(--pm-bg-lighter);
-    color: var(--pm-error); 
+    background-color: var(--pm-light-bg);
+    color: var(--pm-error-red);
+    transform: translateY(-1px);
 }
+.clear-response-btn:active {
+    transform: translateY(0);
+}
+
 .clear-response-btn svg {
-    fill: none; 
-    stroke: currentColor; 
+    fill: none;
+    stroke: currentColor;
+    width: 18px;
+    height: 18px;
 }
 
 .response-tab-controls {
-    border-bottom: 1px solid var(--pm-border);
-    margin-bottom: 0; 
-    background-color: var(--pm-bg-light); 
-    padding-top: 5px; 
+    border-bottom: 1px solid var(--pm-border-color);
+    flex-shrink: 0;
+    padding-left: 18px;
+}
+
+.response-tab-controls .tab-button {
+    padding: 8px 15px;
+    font-size: 0.85em;
 }
 
 .response-panel {
-    flex-grow: 1;
+    flex-grow: 1; /* This panel will take all available space within response-section */
+    padding: 10px 18px 18px 18px;
+    background-color: var(--pm-medium-bg);
     display: flex;
     flex-direction: column;
-    padding-top: 0; 
-    border-radius: 0 0 4px 4px;
+    overflow: hidden; /* Crucial: This makes sure its direct child (code-output) handles its own scroll */
+    min-height: 0; /* Allow flex item to shrink below its content size */
 }
 
 .response-panel-header {
     display: flex;
-    justify-content: flex-end; 
+    justify-content: flex-end;
     align-items: center;
-    padding: 5px 10px;
-    background-color: var(--pm-bg-dark); 
-    border-bottom: 1px solid var(--pm-border);
-    flex-shrink: 0; 
+    padding-bottom: 8px;
+    flex-shrink: 0;
 }
 
+.response-panel-header .icon-button {
+    background-color: var(--pm-light-bg);
+}
+.response-panel-header .icon-button:hover {
+    background-color: var(--pm-border-color);
+}
+
+
 .code-output {
-  flex-grow: 1;
-  background-color: var(--pm-bg-dark); 
-  color: var(--pm-text-primary);
-  padding: 15px;
-  font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
-  font-size: 0.9em;
-  white-space: pre-wrap;
-  word-break: break-all;
-  overflow: auto;
-  line-height: 1.4;
+    background-color: var(--pm-code-bg);
+    color: var(--pm-code-text);
+    border: 1px solid var(--pm-border-color);
+    border-radius: 4px;
+    padding: 12px;
+    font-family: var(--pm-font-code);
+    font-size: 0.85em;
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow: auto; /* Enable scrolling for overflow content */
+    flex-grow: 1; /* CRUCIAL: Allow to take up remaining space within response-panel */
+    line-height: 1.4;
+    min-height: 50px; /* Smallest it can be */
+}
+
+/* Scrollbar styles for a cleaner look */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--pm-medium-bg);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--pm-border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--pm-text-secondary);
+}
+
+/* Specific scrollbar for code areas (darker) */
+.code-input::-webkit-scrollbar,
+.code-output::-webkit-scrollbar,
+.key-value-container::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar,
+.main-content::-webkit-scrollbar { /* Also for main content if it scrolls */
+    width: 8px;
+    height: 8px;
+}
+
+.code-input::-webkit-scrollbar-track,
+.code-output::-webkit-scrollbar-track,
+.key-value-container::-webkit-scrollbar-track,
+.sidebar::-webkit-scrollbar-track,
+.main-content::-webkit-scrollbar-track {
+    background: var(--pm-code-bg); /* Darker track for code/sidebar/main-content areas */
+    border-radius: 4px;
+}
+
+.code-input::-webkit-scrollbar-thumb,
+.code-output::-webkit-scrollbar-thumb,
+.key-value-container::-webkit-scrollbar-thumb,
+.sidebar::-webkit-scrollbar-thumb,
+.main-content::-webkit-scrollbar-thumb {
+    background: var(--pm-border-color);
+    border-radius: 4px;
+}
+
+.code-input::-webkit-scrollbar-thumb:hover,
+.code-output::-webkit-scrollbar-thumb:hover,
+.key-value-container::-webkit-scrollbar-thumb:hover,
+.sidebar::-webkit-scrollbar-thumb:hover,
+.main-content::-webkit-scrollbar-thumb:hover {
+    background: var(--pm-text-secondary);
 }
