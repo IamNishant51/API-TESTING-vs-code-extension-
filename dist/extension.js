@@ -65,7 +65,7 @@ function activate(context) {
                     const startTime = Date.now();
                     let headersToSend = {};
                     try {
-                        const parsedHeaders = JSON.parse(message.headers);
+                        const parsedHeaders = JSON.parse(message.headers || "{}");
                         for (const key in parsedHeaders) {
                             if (Object.prototype.hasOwnProperty.call(parsedHeaders, key)) {
                                 headersToSend[key] = String(parsedHeaders[key]);
@@ -76,12 +76,27 @@ function activate(context) {
                         vscode.window.showWarningMessage("Invalid Headers JSON. Using default 'Content-Type: application/json'.");
                         headersToSend = { "Content-Type": "application/json" };
                     }
+                    // 🔹 Ensure Content-Type if body is present
+                    if ((message.method === "POST" ||
+                        message.method === "PUT" ||
+                        message.method === "PATCH") &&
+                        !headersToSend["Content-Type"]) {
+                        headersToSend["Content-Type"] = "application/json";
+                    }
+                    let bodyToSend = undefined;
+                    if (message.method !== "GET" && message.method !== "HEAD") {
+                        try {
+                            bodyToSend = JSON.stringify(JSON.parse(message.body || "{}"));
+                        }
+                        catch {
+                            // send raw text if not JSON
+                            bodyToSend = message.body;
+                        }
+                    }
                     const response = await fetch(message.url, {
                         method: message.method,
                         headers: headersToSend,
-                        body: message.method !== "GET" && message.method !== "HEAD"
-                            ? message.body
-                            : undefined,
+                        body: bodyToSend,
                     });
                     const endTime = Date.now();
                     const elapsedTime = endTime - startTime;
@@ -90,8 +105,11 @@ function activate(context) {
                     try {
                         formattedText = JSON.stringify(JSON.parse(text), null, 2);
                     }
-                    catch (e) {
-                    }
+                    catch (e) { }
+                    const responseHeaders = {};
+                    response.headers.forEach((value, key) => {
+                        responseHeaders[key] = value;
+                    });
                     panel.webview.postMessage({
                         command: "response",
                         status: response.status,
@@ -99,6 +117,7 @@ function activate(context) {
                         time: elapsedTime,
                         body: formattedText,
                         ok: response.ok,
+                        headers: responseHeaders,
                     });
                 }
                 catch (error) {
@@ -110,10 +129,9 @@ function activate(context) {
                         time: 0,
                         body: "Could not connect to the server or invalid URL. Check console for more details.",
                         ok: false,
+                        headers: {},
                     });
                 }
-            }
-            else if (message.command === "saveState") {
             }
         });
     });

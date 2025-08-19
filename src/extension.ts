@@ -5,12 +5,12 @@ import * as fs from "fs";
 export function activate(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand("api-tester.open", () => {
     const panel = vscode.window.createWebviewPanel(
-      "apiTester", 
-      "API Tester", 
+      "apiTester",
+      "API Tester",
       vscode.ViewColumn.One,
       {
         enableScripts: true,
-        retainContextWhenHidden: true, 
+        retainContextWhenHidden: true,
         localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, "media"))],
       }
     );
@@ -40,11 +40,11 @@ export function activate(context: vscode.ExtensionContext) {
 
           let headersToSend: { [key: string]: string } = {};
           try {
-            const parsedHeaders = JSON.parse(message.headers);
+            const parsedHeaders = JSON.parse(message.headers || "{}");
             for (const key in parsedHeaders) {
-                if (Object.prototype.hasOwnProperty.call(parsedHeaders, key)) {
-                    headersToSend[key] = String(parsedHeaders[key]);
-                }
+              if (Object.prototype.hasOwnProperty.call(parsedHeaders, key)) {
+                headersToSend[key] = String(parsedHeaders[key]);
+              }
             }
           } catch (e) {
             vscode.window.showWarningMessage(
@@ -53,13 +53,30 @@ export function activate(context: vscode.ExtensionContext) {
             headersToSend = { "Content-Type": "application/json" };
           }
 
+          // 🔹 Ensure Content-Type if body is present
+          if (
+            (message.method === "POST" ||
+              message.method === "PUT" ||
+              message.method === "PATCH") &&
+            !headersToSend["Content-Type"]
+          ) {
+            headersToSend["Content-Type"] = "application/json";
+          }
+
+          let bodyToSend: string | undefined = undefined;
+          if (message.method !== "GET" && message.method !== "HEAD") {
+            try {
+              bodyToSend = JSON.stringify(JSON.parse(message.body || "{}"));
+            } catch {
+              // send raw text if not JSON
+              bodyToSend = message.body;
+            }
+          }
+
           const response = await fetch(message.url, {
             method: message.method,
             headers: headersToSend,
-            body:
-              message.method !== "GET" && message.method !== "HEAD"
-                ? message.body
-                : undefined,
+            body: bodyToSend,
           });
 
           const endTime = Date.now();
@@ -69,16 +86,21 @@ export function activate(context: vscode.ExtensionContext) {
           let formattedText = text;
           try {
             formattedText = JSON.stringify(JSON.parse(text), null, 2);
-          } catch (e) {
-          }
+          } catch (e) {}
+
+          const responseHeaders: { [key: string]: string } = {};
+          response.headers.forEach((value, key) => {
+            responseHeaders[key] = value;
+          });
 
           panel.webview.postMessage({
-            command: "response", 
+            command: "response",
             status: response.status,
             statusText: response.statusText,
             time: elapsedTime,
             body: formattedText,
-            ok: response.ok, 
+            ok: response.ok,
+            headers: responseHeaders,
           });
         } catch (error: any) {
           vscode.window.showErrorMessage(`API Request Error: ${error.message}`);
@@ -89,10 +111,9 @@ export function activate(context: vscode.ExtensionContext) {
             time: 0,
             body: "Could not connect to the server or invalid URL. Check console for more details.",
             ok: false,
+            headers: {},
           });
         }
-      } else if (message.command === "saveState") {
-   
       }
     });
   });
