@@ -53,7 +53,6 @@ export function activate(context: vscode.ExtensionContext) {
             headersToSend = { "Content-Type": "application/json" };
           }
 
-          // 🔹 Ensure Content-Type if body is present
           if (
             (message.method === "POST" ||
               message.method === "PUT" ||
@@ -68,7 +67,6 @@ export function activate(context: vscode.ExtensionContext) {
             try {
               bodyToSend = JSON.stringify(JSON.parse(message.body || "{}"));
             } catch {
-              // send raw text if not JSON
               bodyToSend = message.body;
             }
           }

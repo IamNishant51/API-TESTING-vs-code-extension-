@@ -1,32 +1,26 @@
 :root {
-    /* Postman-inspired Dark Theme Colors */
-    --pm-dark-bg: #282828; /* Main Dark Background (similar to Postman's dark theme) */
-    --pm-medium-bg: #333333; /* Slightly lighter background for cards/panels */
-    --pm-light-bg: #3C3C3C; /* Even lighter for input fields, active states */
-    --pm-border-color: #4A4A4A; /* Darker border for separation */
-    --pm-text-primary: #DDDDDD; /* Light text for main content */
-    --pm-text-secondary: #AAAAAA; /* Gray text for labels, descriptions */
-    --pm-text-disabled: #777777; /* For disabled elements */
-    --pm-accent-blue: #007ACC; /* Postman's primary blue */
-    --pm-accent-blue-hover: #00609E; /* Darker blue for hover */
-    --pm-success-green: #28A745; /* Green for success (e.g., 200 OK) */
-    --pm-error-red: #DC3545; /* Red for errors (e.g., 400 Bad Request) */
-    --pm-warning-orange: #FFC107; /* Orange for warnings */
-    --pm-info-blue: #17A2B8; /* Info blue */
+    --pm-dark-bg: #282828;
+    --pm-medium-bg: #333333;
+    --pm-light-bg: #3C3C3C;
+    --pm-border-color: #4A4A4A; 
+    --pm-text-primary: #DDDDDD; 
+    --pm-text-secondary: #AAAAAA;
+    --pm-text-disabled: #777777;
+    --pm-accent-blue: #007ACC;
+    --pm-accent-blue-hover: #00609E; 
+    --pm-success-green: #28A745; 
+    --pm-error-red: #DC3545;
+    --pm-warning-orange: #FFC107; 
+    --pm-info-blue: #17A2B8; 
 
-    /* Method colors - inspired by Postman's colored tags */
-    --pm-method-get: #61AFEF;    /* Similar to VS Code Blue/Postman GET */
-    --pm-method-post: #98C379;   /* Similar to VS Code Green/Postman POST */
-    --pm-method-put: #E5C07B;    /* Similar to VS Code Yellow/Postman PUT */
-    --pm-method-patch: #C678DD;  /* Similar to VS Code Purple/Postman PATCH */
-    --pm-method-delete: #E06C75; /* Similar to VS Code Red/Postman DELETE */
+    --pm-method-get: #61AFEF; 
+    --pm-method-post: #98C379;
+    --pm-method-put: #E5C07B;   
+    --pm-method-patch: #C678DD;  
+    --pm-method-delete: #E06C75;
 
-    /* Code editor specific colors (for `pre` and `textarea`) */
-    --pm-code-bg: #212121; /* Even darker background for code areas */
-    --pm-code-text: #F8F8F8; /* Light text for code */
-    /* Syntax highlighting colors can be added here if you're using a JS library */
-
-    /* Fonts */
+    --pm-code-bg: #212121; 
+    --pm-code-text: #F8F8F8; 
     --pm-font-body: 'Inter', sans-serif;
     --pm-font-code: 'JetBrains Mono', monospace;
 }
@@ -41,19 +35,18 @@
 body {
     background-color: var(--pm-dark-bg);
     color: var(--pm-text-primary);
-    font-size: 14px; /* Standard Postman-like font size */
+    font-size: 14px;
     line-height: 1.5;
     display: flex;
-    height: 100vh; /* Make body take full viewport height */
-    overflow: hidden; /* Hide body scrollbar, main container handles overflow */
+    height: 100vh;
+    overflow: hidden;
 }
 
-/* --- General UI Enhancements --- */
 .container {
     display: flex;
     width: 100%;
-    height: 100%; /* Take full height of body */
-    overflow: hidden; /* Main content handles its own scroll, sidebar too */
+    height: 100%; 
+    overflow: hidden; 
 }
 
 .card {
@@ -65,11 +58,10 @@ body {
     margin-bottom: 15px;
     display: flex;
     flex-direction: column;
-    min-height: 0; /* Crucial for flex items to shrink */
-    flex-shrink: 1; /* Allow cards to shrink */
+    min-height: 0; 
+    flex-shrink: 1; 
 }
 
-/* --- Sidebar --- */
 .sidebar {
     width: 260px;
     min-width: 260px;
@@ -78,7 +70,7 @@ body {
     display: flex;
     flex-direction: column;
     padding: 15px;
-    overflow-y: auto; /* Sidebar itself should scroll */
+    overflow-y: auto;
     flex-shrink: 0;
     transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out, padding 0.3s ease-in-out;
 }
@@ -252,26 +244,24 @@ body {
     background-color: rgba(220,53,69,0.2);
 }
 
-/* --- Main Content --- */
 .main-content {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     background-color: var(--pm-medium-bg);
     padding: 20px;
-    gap: 15px; /* Spacing between request and response sections */
-    overflow-y: auto; /* Allow main content to scroll if its children overflow */
-    min-width: 0; /* Crucial for flex item to prevent overflow */
+    gap: 15px; 
+    overflow-y: auto;
+    min-width: 0; 
 }
 
-/* Request Section - now acts as a single card that expands */
 .request-section {
-    flex-grow: 0; /* Don't want this to grow unless necessary, let response grow more */
-    flex-shrink: 0; /* This section should maintain its height if possible */
+    flex-grow: 0; 
+    flex-shrink: 0; 
     display: flex;
     flex-direction: column;
-    min-height: fit-content; /* Allow content to dictate min-height, then shrink if forced */
-    margin-bottom: 0; /* Removed margin-bottom here, using gap in main-content */
+    min-height: fit-content; 
+    margin-bottom: 0; 
 }
 
 .request-name-input {
@@ -285,7 +275,7 @@ body {
     outline: none;
     margin-bottom: 10px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    flex-shrink: 0; /* Prevent from shrinking */
+    flex-shrink: 0; 
 }
 .request-name-input:focus {
     border-color: var(--pm-accent-blue);
@@ -297,7 +287,7 @@ body {
     gap: 8px;
     margin-bottom: 15px;
     align-items: center;
-    flex-shrink: 0; /* Prevent this line from shrinking */
+    flex-shrink: 0; 
 }
 
 .method-select {
@@ -319,7 +309,7 @@ body {
     background-position: right 8px center;
     padding-right: 25px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    flex-shrink: 0; /* Prevent from shrinking */
+    flex-shrink: 0; 
 }
 
 .method-select:focus {
@@ -327,7 +317,6 @@ body {
     box-shadow: 0 0 0 1px var(--pm-accent-blue);
 }
 
-/* Method specific colors - ensure contrast */
 .method-select option[value="GET"] { color: var(--pm-method-get); font-weight: 500; }
 .method-select option[value="POST"] { color: var(--pm-method-post); font-weight: 500; }
 .method-select option[value="PUT"] { color: var(--pm-method-put); font-weight: 500; }
@@ -345,7 +334,7 @@ body {
     font-size: 0.95em;
     outline: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    min-width: 100px; /* Ensure it has a minimum width */
+    min-width: 100px; 
 }
 
 .url-input:focus {
@@ -381,7 +370,7 @@ body {
     display: flex;
     border-bottom: 1px solid var(--pm-border-color);
     margin-bottom: 15px;
-    flex-shrink: 0; /* Prevent tabs from shrinking */
+    flex-shrink: 0;
 }
 
 .tab-button {
@@ -409,16 +398,15 @@ body {
     font-weight: 600;
 }
 
-/* Ensure tab panels fill height inside their card */
-.card .tab-panel { /* Specificity for tab panels within .card */
+.card .tab-panel {
     padding-top: 10px;
     background-color: var(--pm-medium-bg);
     border-radius: 0 0 6px 6px;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Important for containing scrolling children like code-input */
-    flex-grow: 1; /* Make tab panels grow within their parent card */
-    min-height: 0; /* Allow tab panels to shrink below content size */
+    overflow: hidden; 
+    flex-grow: 1;
+    min-height: 0;
 }
 
 .textarea-header {
@@ -475,7 +463,7 @@ body {
 }
 
 .hidden {
-    display: none !important; /* Use !important to override any other display properties */
+    display: none !important; 
 }
 
 .copy-button.copied-active {
@@ -508,9 +496,9 @@ body {
     outline: none;
     line-height: 1.4;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    flex-grow: 1; /* Allow code-input to grow/shrink */
-    min-height: 50px; /* Smallest it can be */
-    overflow: auto; /* Ensure code input is scrollable if content overflows */
+    flex-grow: 1;
+    min-height: 50px;
+    overflow: auto;
 }
 
 .code-input:focus {
@@ -523,7 +511,7 @@ body {
     background-color: var(--pm-code-bg);
     border: 1px solid var(--pm-border-color);
     border-radius: 4px;
-    max-height: 160px; /* Still constrain max height for params */
+    max-height: 160px; 
     overflow-y: auto;
     margin-bottom: 10px;
     flex-shrink: 0;
@@ -662,33 +650,22 @@ body {
 }
 
 
-/* --- Response Section (Targeting potential duplicates) --- */
 .response-section {
-    flex-grow: 1; /* Allow it to take available space */
+    flex-grow: 1; 
     display: flex;
     flex-direction: column;
     background-color: var(--pm-medium-bg);
     border: 1px solid var(--pm-border-color);
     border-radius: 6px;
-    overflow: hidden; /* Important for containing scrolling children */
+    overflow: hidden; 
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    min-height: 200px; /* Give it a reasonable minimum height */
-    /* If you somehow have two of these in HTML, this might cause layout issues. */
-    /* Ensure only ONE .response-section exists in your HTML. */
-    margin-top: 0; /* Remove specific margin-top here, let main-content gap handle it */
+    min-height: 200px; 
+    margin-top: 0;
 }
 
-/* Aggressive hidden rule for any potential second response section if HTML is duplicated */
-/* IMPORTANT: If you want to hide a specific, *second* instance of a response section,
-   you would need a way to target it uniquely, e.g., an ID or a specific parent.
-   Without seeing your HTML, it's hard to be precise.
-   If your HTML truly has two `.response-section` elements, one *must* be hidden
-   or removed in the HTML itself. This CSS attempts to mitigate, but isn't a cure. */
 .main-content > .response-section:nth-child(even),
 .main-content > .response-section:nth-child(odd):not(:first-of-type) {
-    /* This rule tries to target any .response-section that isn't the *first* one
-       inside main-content. This is a hacky fix for duplicate HTML. */
-    /* display: none !important; */ /* Uncomment this if you *must* hide a duplicate via CSS */
+
 }
 
 
@@ -776,13 +753,13 @@ body {
 }
 
 .response-panel {
-    flex-grow: 1; /* This panel will take all available space within response-section */
+    flex-grow: 1;
     padding: 10px 18px 18px 18px;
     background-color: var(--pm-medium-bg);
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Crucial: This makes sure its direct child (code-output) handles its own scroll */
-    min-height: 0; /* Allow flex item to shrink below its content size */
+    overflow: hidden; 
+    min-height: 0; 
 }
 
 .response-panel-header {
@@ -811,13 +788,12 @@ body {
     font-size: 0.85em;
     white-space: pre-wrap;
     word-break: break-all;
-    overflow: auto; /* Enable scrolling for overflow content */
-    flex-grow: 1; /* CRUCIAL: Allow to take up remaining space within response-panel */
+    overflow: auto; 
+    flex-grow: 1; 
     line-height: 1.4;
-    min-height: 50px; /* Smallest it can be */
+    min-height: 50px;
 }
 
-/* Scrollbar styles for a cleaner look */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -837,12 +813,11 @@ body {
     background: var(--pm-text-secondary);
 }
 
-/* Specific scrollbar for code areas (darker) */
 .code-input::-webkit-scrollbar,
 .code-output::-webkit-scrollbar,
 .key-value-container::-webkit-scrollbar,
 .sidebar::-webkit-scrollbar,
-.main-content::-webkit-scrollbar { /* Also for main content if it scrolls */
+.main-content::-webkit-scrollbar { 
     width: 8px;
     height: 8px;
 }
@@ -852,7 +827,7 @@ body {
 .key-value-container::-webkit-scrollbar-track,
 .sidebar::-webkit-scrollbar-track,
 .main-content::-webkit-scrollbar-track {
-    background: var(--pm-code-bg); /* Darker track for code/sidebar/main-content areas */
+    background: var(--pm-code-bg); 
     border-radius: 4px;
 }
 
