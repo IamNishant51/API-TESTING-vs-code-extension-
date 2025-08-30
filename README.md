@@ -117,7 +117,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-Made with ❤️ by Nishant Unavane/IamNishant51/API-TESTING-vs-code-extension-/main/images/screenshot2.png)
+Made with ❤️ by Nishant Unavane
 
 ---
 
