@@ -117,13 +117,14 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-Made with ❤️ by Nishant Unavane
-
----
-
 ## Installation
 
 1. Open VS Code.
 2. Go to the **Extensions** view (`Ctrl+Shift+X` or `Cmd+Shift+X` on macOS).
 3. Search for **API Tester Pro**.
 4. Click **Install**.
+
+---
+
+Made with ❤️ by Nishant Unavane
+
