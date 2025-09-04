@@ -1,10 +1,50 @@
-const vscode = acquireVsCodeApi();
+console.log("Initializing API Tester...");
 
-const mainContainer = document.getElementById("mainContainer");
-const sidebar = document.getElementById("sidebar");
-const toggleSidebarBtn = document.getElementById("toggleSidebarBtn");
+if (typeof vscode === "undefined") {
+  console.error(
+    "VS Code API is not available! Make sure acquireVsCodeApi() was called."
+  );
+} else {
+  console.log("VS Code API is available");
+}
+
+// Check if all required elements exist
+const requiredElements = [
+  "newRequestBtn",
+  "requestTabs",
+  "requestNameInput",
+  "methodSelect",
+  "urlInput",
+  "sendBtn",
+  "requestBody",
+  "requestHeaders",
+  "responseOutput",
+  "responseHeadersOutput",
+  "responseCookiesOutput",
+  "statusCode",
+  "responseTime",
+  "responseSize",
+  "clearResponseBtn",
+  "paramsContainer",
+  "addParamBtn",
+  "authTypeSelect",
+  "environmentVariables",
+  "preRequestScript",
+  "testsScript",
+];
+
+requiredElements.forEach((id) => {
+  const element = document.getElementById(id);
+  if (!element) {
+    console.error(`Required element not found: ${id}`);
+  } else {
+    console.log(`Found element: ${id}`);
+  }
+});
+
+const appContainer = document.querySelector(".app-container");
 const newRequestBtn = document.getElementById("newRequestBtn");
-const requestListEl = document.getElementById("requestList");
+const requestTabs = document.getElementById("requestTabs");
 
 const requestNameInput = document.getElementById("requestNameInput");
 const methodSelectEl = document.getElementById("methodSelect");
@@ -27,17 +67,13 @@ const responseSizeEl = document.getElementById("responseSize");
 const clearResponseBtn = document.getElementById("clearResponseBtn");
 
 const requestTabButtons = document.querySelectorAll(
-  ".request-section .tab-button"
+  ".tab-controls .tab-button"
 );
-const requestTabPanels = document.querySelectorAll(
-  ".request-section .tab-panel"
-);
+const requestTabPanels = document.querySelectorAll(".tab-panel");
 const responseTabButtons = document.querySelectorAll(
-  ".response-section .tab-button"
+  ".response-tab-controls .tab-button"
 );
-const responseTabPanels = document.querySelectorAll(
-  ".response-section .tab-panel"
-);
+const responseTabPanels = document.querySelectorAll(".response-panel");
 
 const paramsContainer = document.getElementById("paramsContainer");
 const addParamBtn = document.getElementById("addParamBtn");
@@ -76,19 +112,18 @@ let savedRequests = JSON.parse(
   localStorage.getItem("apiTesterRequests") || "[]"
 );
 let activeRequestIndex = null;
-let isSidebarCollapsed = false;
 let environmentVars = {};
 
 function saveStateToVsCode() {
   vscode.setState({
     requests: savedRequests,
     activeIndex: activeRequestIndex,
-    isSidebarCollapsed: isSidebarCollapsed,
     environmentVars: environmentVariablesEl.value,
   });
 }
 
 function parseEnvironmentVariables() {
+  console.log("Parsing environment variables");
   try {
     environmentVars = JSON.parse(environmentVariablesEl.value || "{}");
   } catch (e) {
@@ -120,29 +155,32 @@ function substituteVariables(str) {
 }
 
 function renderRequestList() {
-  requestListEl.innerHTML = "";
+  console.log("Rendering request list, requests:", savedRequests.length);
+  requestTabs.innerHTML = "";
   savedRequests.forEach((req, index) => {
-    const item = document.createElement("div");
-    item.className =
-      "request-item" + (index === activeRequestIndex ? " active" : "");
+    const tab = document.createElement("div");
+    tab.className =
+      "request-tab" + (index === activeRequestIndex ? " active" : "");
     const displayName =
       req.name && req.name.trim() !== ""
         ? req.name
-        : `[${req.method}] ${
-            req.url.length > 30
-              ? req.url.substring(0, 27) + "..."
-              : req.url || "New Request"
-          }`;
-    item.innerHTML = `
+        : `[${req.method}] ${req.url || "New Request"}`;
+    tab.innerHTML = `
       <span>${displayName}</span>
-      <button class="delete-btn" title="Delete Request">✖</button>
+      <button class="close-tab-btn" title="Close Tab">×</button>
     `;
-    item.addEventListener("click", () => loadRequest(index));
-    item.querySelector(".delete-btn").addEventListener("click", (e) => {
+    tab.addEventListener("click", (e) => {
+      if (!e.target.classList.contains("close-tab-btn")) {
+        console.log("Request tab clicked:", index);
+        loadRequest(index);
+      }
+    });
+    tab.querySelector(".close-tab-btn").addEventListener("click", (e) => {
       e.stopPropagation();
+      console.log("Close tab clicked:", index);
       deleteRequest(index);
     });
-    requestListEl.prepend(item);
+    requestTabs.appendChild(tab);
   });
 }
 
@@ -151,6 +189,7 @@ function renderRequestList() {
  * @param {number} index
  */
 function loadRequest(index) {
+  console.log("Loading request:", index);
   if (activeRequestIndex !== null && activeRequestIndex !== index) {
     saveCurrentRequest();
   } else if (activeRequestIndex === null && urlInputEl.value.trim() !== "") {
@@ -195,6 +234,7 @@ function loadRequest(index) {
 }
 
 function saveCurrentRequest() {
+  console.log("Saving current request");
   const currentRequest = {
     name: requestNameInput.value.trim(),
     method: methodSelectEl.value,
@@ -244,6 +284,7 @@ function deleteRequest(indexToDelete) {
 }
 
 function resetRequestEditor() {
+  console.log("Resetting request editor");
   requestNameInput.value = "";
   methodSelectEl.value = "GET";
   urlInputEl.value = "";
@@ -281,6 +322,7 @@ function resetResponseDisplay() {
  * @param {object} [param={}]
  */
 function addParamRow(param = {}) {
+  console.log("Adding parameter row:", param);
   const row = document.createElement("div");
   row.className = "key-value-row";
   row.innerHTML = `
@@ -298,6 +340,7 @@ function addParamRow(param = {}) {
   paramsContainer.appendChild(row);
 
   row.querySelector(".delete-key-value-btn").addEventListener("click", () => {
+    console.log("Delete parameter clicked");
     row.remove();
     saveCurrentRequest();
   });
@@ -312,6 +355,7 @@ function addParamRow(param = {}) {
  * @param {Array<object>} params
  */
 function renderParams(params) {
+  console.log("Rendering parameters:", params);
   paramsContainer.innerHTML = "";
   if (params.length === 0) {
     addParamRow();
@@ -326,10 +370,11 @@ function renderParams(params) {
  */
 function getParamsFromUI() {
   const params = [];
-  paramsContainer.querySelectorAll(".key-value-row").forEach((row) => {
-    const enabled = row.querySelector(".param-enabled").checked;
-    const key = row.querySelector(".param-key").value.trim();
-    const value = row.querySelector(".param-value").value.trim();
+  const paramRows = paramsContainer.querySelectorAll(".key-value-row");
+  paramRows.forEach((row) => {
+    const enabled = row.querySelector(".param-enabled")?.checked || false;
+    const key = row.querySelector(".param-key")?.value?.trim() || "";
+    const value = row.querySelector(".param-value")?.value?.trim() || "";
     if (key || value) {
       params.push({ key, value, enabled });
     }
@@ -362,6 +407,7 @@ function buildUrlWithParams(baseUrl, params) {
 }
 
 function updateAuthUI() {
+  console.log("Updating auth UI:", authTypeSelect.value);
   const selectedType = authTypeSelect.value;
   bearerTokenInputGroup.classList.add("hidden");
   basicAuthInputGroup.classList.add("hidden");
@@ -393,6 +439,26 @@ function formatJsonInput(textareaEl) {
       command: "showError",
       message: "Invalid JSON. Cannot format.",
     });
+  }
+}
+
+/**
+ * Auto-formats JSON content when pasted or when content changes
+ * @param {HTMLTextAreaElement} textareaEl
+ */
+function autoFormatJson(textareaEl) {
+  if (!textareaEl.value.trim()) {
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(textareaEl.value);
+    const formatted = JSON.stringify(parsed, null, 2);
+    if (formatted !== textareaEl.value) {
+      textareaEl.value = formatted;
+    }
+  } catch (e) {
+    // Silently ignore invalid JSON - don't format if it's not valid JSON
   }
 }
 
@@ -465,15 +531,25 @@ function copyToClipboard(
  * @param {NodeListOf<HTMLElement>} allPanels
  */
 function switchTab(clickedButton, allButtons, allPanels) {
+  console.log("Switching tab:", clickedButton.dataset.target);
+
   allButtons.forEach((btn) => btn.classList.remove("active"));
   allPanels.forEach((panel) => panel.classList.add("hidden"));
 
   clickedButton.classList.add("active");
   const targetPanelId = clickedButton.dataset.target;
-  document.getElementById(targetPanelId).classList.remove("hidden");
+  const targetPanel = document.getElementById(targetPanelId);
+
+  if (targetPanel) {
+    targetPanel.classList.remove("hidden");
+    console.log("Switched to panel:", targetPanelId);
+  } else {
+    console.error("Panel not found:", targetPanelId);
+  }
 }
 
 sendBtnEl.addEventListener("click", () => {
+  console.log("Send button clicked");
   saveCurrentRequest();
 
   let url = substituteVariables(urlInputEl.value);
@@ -551,6 +627,13 @@ sendBtnEl.addEventListener("click", () => {
   statusCodeEl.classList.remove("status-code-success", "status-code-error");
   switchTab(responseTabButtons[0], responseTabButtons, responseTabPanels);
 
+  console.log("Sending request message to extension:", {
+    command: "sendRequest",
+    method,
+    url,
+    headers,
+    body,
+  });
   vscode.postMessage({
     command: "sendRequest",
     method,
@@ -561,8 +644,10 @@ sendBtnEl.addEventListener("click", () => {
 });
 
 window.addEventListener("message", (event) => {
+  console.log("Webview received message:", event.data);
   const message = event.data;
   if (message.command === "response") {
+    console.log("Processing response message:", message);
     statusCodeEl.textContent = `Status: ${message.status} ${message.statusText}`;
     if (message.ok && message.status >= 200 && message.status < 300) {
       statusCodeEl.classList.add("status-code-success");
@@ -611,66 +696,130 @@ window.addEventListener("message", (event) => {
       displayHeaders = "No response headers received.";
     }
     responseHeadersOutputEl.textContent = displayHeaders;
+  } else if (message.command === "error") {
+    console.error("Error received from extension:", message);
+    statusCodeEl.textContent = `Status: Error`;
+    statusCodeEl.classList.add("status-code-error");
+    responseOutputEl.textContent =
+      message.body ||
+      "An error occurred. Please check the console for details.";
+    responseHeadersOutputEl.textContent = "No response headers received.";
   }
 });
 
 requestTabButtons.forEach((button) => {
   button.addEventListener("click", () => {
+    console.log("Request tab clicked:", button.dataset.target);
     switchTab(button, requestTabButtons, requestTabPanels);
   });
 });
 
 responseTabButtons.forEach((button) => {
   button.addEventListener("click", () => {
+    console.log("Response tab clicked:", button.dataset.target);
     switchTab(button, responseTabButtons, responseTabPanels);
   });
 });
 
 newRequestBtn.addEventListener("click", () => {
+  console.log("New request button clicked");
   saveCurrentRequest();
   resetRequestEditor();
 });
 
-toggleSidebarBtn.addEventListener("click", () => {
-  isSidebarCollapsed = !isSidebarCollapsed;
-  mainContainer.classList.toggle("sidebar-collapsed", isSidebarCollapsed);
-  saveStateToVsCode();
-});
-
 clearResponseBtn.addEventListener("click", () => {
+  console.log("Clear response button clicked");
   resetResponseDisplay();
 });
 
 addParamBtn.addEventListener("click", () => {
+  console.log("Add parameter button clicked");
   addParamRow();
   saveCurrentRequest();
 });
 
-authTypeSelect.addEventListener("change", updateAuthUI);
-bearerTokenInput.addEventListener("input", saveCurrentRequest);
-basicUsernameInput.addEventListener("input", saveCurrentRequest);
-basicPasswordInput.addEventListener("input", saveCurrentRequest);
-apiKeyInput.addEventListener("input", saveCurrentRequest);
-apiKeyHeaderInput.addEventListener("input", saveCurrentRequest);
+authTypeSelect.addEventListener("change", () => {
+  console.log("Auth type changed");
+  updateAuthUI();
+});
+bearerTokenInput.addEventListener("input", () => {
+  console.log("Bearer token input changed");
+  saveCurrentRequest();
+});
+basicUsernameInput.addEventListener("input", () => {
+  console.log("Basic username input changed");
+  saveCurrentRequest();
+});
+basicPasswordInput.addEventListener("input", () => {
+  console.log("Basic password input changed");
+  saveCurrentRequest();
+});
+apiKeyInput.addEventListener("input", () => {
+  console.log("API key input changed");
+  saveCurrentRequest();
+});
+apiKeyHeaderInput.addEventListener("input", () => {
+  console.log("API key header input changed");
+  saveCurrentRequest();
+});
 
-requestNameInput.addEventListener("input", saveCurrentRequest);
-methodSelectEl.addEventListener("change", saveCurrentRequest);
-urlInputEl.addEventListener("input", saveCurrentRequest);
-requestHeadersEl.addEventListener("input", saveCurrentRequest);
-requestBodyEl.addEventListener("input", saveCurrentRequest);
-preRequestScriptEl.addEventListener("input", saveCurrentRequest);
-testsScriptEl.addEventListener("input", saveCurrentRequest);
+requestNameInput.addEventListener("input", () => {
+  console.log("Request name input changed");
+  saveCurrentRequest();
+});
+methodSelectEl.addEventListener("change", () => {
+  console.log("Method select changed");
+  saveCurrentRequest();
+});
+urlInputEl.addEventListener("input", () => {
+  console.log("URL input changed");
+  saveCurrentRequest();
+});
+requestHeadersEl.addEventListener("input", () => {
+  console.log("Request headers input changed");
+  saveCurrentRequest();
+});
+requestBodyEl.addEventListener("input", () => {
+  console.log("Request body input changed");
+  saveCurrentRequest();
+});
+preRequestScriptEl.addEventListener("input", () => {
+  console.log("Pre-request script input changed");
+  saveCurrentRequest();
+});
+testsScriptEl.addEventListener("input", () => {
+  console.log("Tests script input changed");
+  saveCurrentRequest();
+});
 
-environmentVariablesEl.addEventListener("input", parseEnvironmentVariables);
+environmentVariablesEl.addEventListener("input", () => {
+  console.log("Environment variables input changed");
+  parseEnvironmentVariables();
+});
 
-formatHeadersBtn.addEventListener("click", () =>
-  formatJsonInput(requestHeadersEl)
-);
-formatBodyBtn.addEventListener("click", () => formatJsonInput(requestBodyEl));
+// Auto-format JSON in request body on paste and blur
+requestBodyEl.addEventListener("paste", (e) => {
+  console.log("Paste event in request body");
+  setTimeout(() => autoFormatJson(requestBodyEl), 10);
+});
+requestBodyEl.addEventListener("blur", () => {
+  console.log("Blur event in request body");
+  autoFormatJson(requestBodyEl);
+});
 
-copyUrlBtn.addEventListener("click", (e) =>
-  copyToClipboard(urlInputEl.value, e.currentTarget, "URL copied!")
-);
+formatHeadersBtn.addEventListener("click", () => {
+  console.log("Format headers button clicked");
+  formatJsonInput(requestHeadersEl);
+});
+formatBodyBtn.addEventListener("click", () => {
+  console.log("Format body button clicked");
+  formatJsonInput(requestBodyEl);
+});
+
+copyUrlBtn.addEventListener("click", (e) => {
+  console.log("Copy URL button clicked");
+  copyToClipboard(urlInputEl.value, e.currentTarget, "URL copied!");
+});
 copyHeadersBtn.addEventListener("click", (e) =>
   copyToClipboard(
     requestHeadersEl.value,
@@ -714,6 +863,7 @@ copyResponseHeadersBtn.addEventListener("click", (e) =>
 );
 
 const restoredState = vscode.getState();
+console.log("Restored state:", restoredState);
 if (restoredState) {
   if (restoredState.requests && restoredState.requests.length > 0) {
     savedRequests = restoredState.requests;
@@ -733,16 +883,18 @@ if (restoredState) {
   environmentVariablesEl.value = restoredState.environmentVars || "{}";
   parseEnvironmentVariables();
 
-  isSidebarCollapsed = restoredState.isSidebarCollapsed || false;
-  mainContainer.classList.toggle("sidebar-collapsed", isSidebarCollapsed);
+  // No sidebar state to restore in new layout
 } else {
+  console.log("No restored state found, initializing fresh");
   resetRequestEditor();
   environmentVariablesEl.value = "{}";
   parseEnvironmentVariables();
 }
 
 if (paramsContainer.children.length === 0) {
+  console.log("No parameters found, adding default row");
   addParamRow();
 }
 
+console.log("Calling renderRequestList");
 renderRequestList();

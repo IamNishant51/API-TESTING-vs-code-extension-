@@ -1,54 +1,50 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nishant's API Tester</title> <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div class="container" id="mainContainer">
-      <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-          <h2>Collections</h2>
-        </div>
-        <div id="requestList" class="request-list">
-          </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Tester</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Request Tabs - Exactly like Postman -->
+    <div class="top-tabs">
+      <div class="request-tabs" id="requestTabs">
+        <!-- Request tabs will be dynamically added here -->
       </div>
+      <button id="newRequestBtn" class="new-tab-btn" title="New Request">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 4C11.4477 4 11 4.44772 11 5V11H5C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13H11V19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19V13H19C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11H13V5C13 4.44772 12.5523 4 12 4Z" />
+        </svg>
+      </button>
+    </div>
 
-      <div class="main-content">
-        <div class="main-toolbar">
-          <button id="newRequestBtn" class="new-request-btn" title="New Request">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 4C11.4477 4 11 4.44772 11 5V11H5C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13H11V19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19V13H19C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11H13V5C13 4.44772 12.5523 4 12 4Z" />
-            </svg>
-            New
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Request Builder Section -->
+      <div class="request-section">
+        <input type="text" id="requestNameInput" class="request-name-input" placeholder="Untitled Request" />
+        <div class="request-line">
+          <select id="methodSelect" class="method-select">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="PATCH">PATCH</option>
+            <option value="DELETE">DELETE</option>
+          </select>
+          <input type="text" id="urlInput" class="url-input" placeholder="Enter request URL" />
+          <button id="copyUrlBtn" class="icon-button copy-button" title="Copy URL">
+            <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <svg class="check-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
           </button>
-          <button id="toggleSidebarBtn" class="toggle-sidebar-btn" title="Toggle Sidebar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path class="collapse-icon" d="M15 17L10 12L15 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path class="expand-icon" d="M9 7L14 12L9 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
+          <button id="sendBtn" class="send-button">Send</button>
         </div>
-        <div class="request-section card"> <input type="text" id="requestNameInput" class="request-name-input" placeholder="Request Name (Optional)" />
-          <div class="request-line">
-            <select id="methodSelect" class="method-select">
-              <option value="GET">GET</option>
-              <option value="POST">POST</option>
-              <option value="PUT">PUT</option>
-              <option value="PATCH">PATCH</option>
-              <option value="DELETE">DELETE</option>
-            </select>
-            <input type="text" id="urlInput" class="url-input" placeholder="Enter request URL" />
-            <button id="copyUrlBtn" class="icon-button copy-button" title="Copy URL">
-              <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              <svg class="check-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </button>
-            <button id="sendBtn" class="send-button">Send</button>
-          </div>
 
+        <!-- Request Configuration Tabs -->
+        <div class="request-tabs-container">
           <div class="tab-controls">
             <button class="tab-button active" data-target="params-panel">Params</button>
             <button class="tab-button" data-target="auth-panel">Auth</button>
@@ -60,8 +56,7 @@
           </div>
 
           <div id="params-panel" class="tab-panel active">
-            <div id="paramsContainer" class="key-value-container">
-              </div>
+            <div id="paramsContainer" class="key-value-container"></div>
             <button id="addParamBtn" class="add-key-value-btn">Add Parameter</button>
           </div>
 
@@ -124,7 +119,7 @@
             </div>
             <textarea id="requestBody" class="code-input" placeholder="Request Body (JSON, XML, etc.)"></textarea>
           </div>
-          
+
           <div id="pre-request-panel" class="tab-panel hidden">
             <div class="textarea-header">
               <label>Pre-request Scripts</label>
@@ -150,69 +145,75 @@
             </div>
             <textarea id="testsScript" class="code-input" placeholder="Tests run after the response is received. Use JavaScript to validate the response."></textarea>
           </div>
-          
+
           <div id="env-panel" class="tab-panel hidden">
-              <p class="env-description">Define global variables as a JSON object. Use `{{variableName}}` in URL, Headers, or Body for dynamic values.</p>
-              <textarea id="environmentVariables" class="code-input" placeholder='{"baseUrl": "https://api.example.com", "apiKey": "your_api_key"}'></textarea>
-          </div>
-        </div>
-
-        <div class="response-section card"> <div class="response-header">
-            <h3>Response</h3>
-            <div class="response-meta">
-              <span id="statusCode" class="status-code">Status: -</span>
-              <span id="responseTime" class="response-time">Time: -</span>
-              <span id="responseSize" class="response-size">Size: -</span>
-              <button id="clearResponseBtn" class="clear-response-btn" title="Clear Response">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                      <line x1="10" y1="11" x2="10" y2="17"></line>
-                      <line x1="14" y1="11" x2="14" y2="17"></line>
-                  </svg>
-              </button>
-            </div>
-          </div>
-          
-          <div class="tab-controls response-tab-controls">
-            <button class="tab-button active" data-target="response-body-panel">Body</button>
-            <button class="tab-button" data-target="response-cookies-panel">Cookies</button>
-            <button class="tab-button" data-target="response-headers-panel">Headers</button>
-          </div>
-
-          <div id="response-body-panel" class="tab-panel active response-panel">
-              <div class="response-panel-header">
-                  <button id="copyResponseBodyBtn" class="icon-button copy-button" title="Copy Response Body">
-                      <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                      <svg class="check-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  </button>
-              </div>
-              <pre id="responseOutput" class="code-output">Response body will appear here...</pre>
-          </div>
-
-          <div id="response-cookies-panel" class="tab-panel hidden response-panel">
-              <div class="response-panel-header">
-                  <button id="copyResponseCookiesBtn" class="icon-button copy-button" title="Copy Response Cookies">
-                      <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                      <svg class="check-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  </button>
-              </div>
-              <pre id="responseCookiesOutput" class="code-output">Response cookies will appear here...</pre>
-          </div>
-
-          <div id="response-headers-panel" class="tab-panel hidden response-panel">
-              <div class="response-panel-header">
-                  <button id="copyResponseHeadersBtn" class="icon-button copy-button" title="Copy Response Headers">
-                      <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                      <svg class="check-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  </button>
-              </div>
-              <pre id="responseHeadersOutput" class="code-output">Response headers will appear here...</pre>
+            <p class="env-description">Define global variables as a JSON object. Use `{{variableName}}` in URL, Headers, or Body for dynamic values.</p>
+            <textarea id="environmentVariables" class="code-input" placeholder='{"baseUrl": "https://api.example.com", "apiKey": "your_api_key"}'></textarea>
           </div>
         </div>
       </div>
-    </div>
 
-    <script src="panel.js"></script>
-  </body>
-  </html>
+      <!-- Response Section -->
+      <div class="response-section">
+        <div class="response-header">
+          <h3>Response</h3>
+          <div class="response-meta">
+            <span id="statusCode" class="status-code">Status: -</span>
+            <span id="responseTime" class="response-time">Time: -</span>
+            <span id="responseSize" class="response-size">Size: -</span>
+            <button id="clearResponseBtn" class="clear-response-btn" title="Clear Response">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="tab-controls response-tab-controls">
+          <button class="tab-button active" data-target="response-body-panel">Body</button>
+          <button class="tab-button" data-target="response-cookies-panel">Cookies</button>
+          <button class="tab-button" data-target="response-headers-panel">Headers</button>
+        </div>
+
+        <div id="response-body-panel" class="tab-panel active response-panel">
+          <div class="response-panel-header">
+            <button id="copyResponseBodyBtn" class="icon-button copy-button" title="Copy Response Body">
+              <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <svg class="check-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </button>
+          </div>
+          <pre id="responseOutput" class="code-output">Response body will appear here...</pre>
+        </div>
+
+        <div id="response-cookies-panel" class="tab-panel hidden response-panel">
+          <div class="response-panel-header">
+            <button id="copyResponseCookiesBtn" class="icon-button copy-button" title="Copy Response Cookies">
+              <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <svg class="check-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </button>
+          </div>
+          <pre id="responseCookiesOutput" class="code-output">Response cookies will appear here...</pre>
+        </div>
+
+        <div id="response-headers-panel" class="tab-panel hidden response-panel">
+          <div class="response-panel-header">
+            <button id="copyResponseHeadersBtn" class="icon-button copy-button" title="Copy Response Headers">
+              <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <svg class="check-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </button>
+          </div>
+          <pre id="responseHeadersOutput" class="code-output">Response headers will appear here...</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const vscode = acquireVsCodeApi();
+  </script>
+  <script src="panel.js"></script>
+</body>
+</html>
