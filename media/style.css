@@ -96,19 +96,6 @@ body {
     display: none;
 }
 
-.container.sidebar-collapsed .new-request-btn {
-    opacity: 0;
-    pointer-events: none;
-    width: 0;
-    margin-right: -8px;
-    transition: all 0.3s ease-in-out;
-}
-
-.container.sidebar-collapsed .sidebar-actions {
-    justify-content: center;
-    width: 100%;
-}
-
 .container.sidebar-collapsed .sidebar-header {
     justify-content: center;
     border-bottom: none;
@@ -253,6 +240,62 @@ body {
     gap: 15px; 
     overflow-y: auto;
     min-width: 0; 
+}
+
+.main-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--pm-dark-bg);
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    flex-shrink: 0;
+}
+
+.main-toolbar .new-request-btn {
+    background-color: var(--pm-accent-blue);
+    color: var(--pm-text-primary);
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.main-toolbar .new-request-btn:hover {
+    background-color: var(--pm-accent-blue-hover);
+    transform: translateY(-1px);
+}
+
+.main-toolbar .new-request-btn:active {
+    transform: translateY(0);
+}
+
+.main-toolbar .toggle-sidebar-btn {
+    background-color: transparent;
+    color: var(--pm-text-secondary);
+    border: none;
+    border-radius: 4px;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+}
+
+.main-toolbar .toggle-sidebar-btn:hover {
+    background-color: var(--pm-light-bg);
+    color: var(--pm-accent-blue);
+    transform: translateY(-1px);
+}
+
+.main-toolbar .toggle-sidebar-btn:active {
+    transform: translateY(0);
 }
 
 .request-section {
@@ -662,12 +705,6 @@ body {
     min-height: 200px; 
     margin-top: 0;
 }
-
-.main-content > .response-section:nth-child(even),
-.main-content > .response-section:nth-child(odd):not(:first-of-type) {
-
-}
-
 
 .response-header {
     display: flex;

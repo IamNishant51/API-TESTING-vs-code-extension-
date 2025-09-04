@@ -76,7 +76,6 @@ function activate(context) {
                         vscode.window.showWarningMessage("Invalid Headers JSON. Using default 'Content-Type: application/json'.");
                         headersToSend = { "Content-Type": "application/json" };
                     }
-                    // 🔹 Ensure Content-Type if body is present
                     if ((message.method === "POST" ||
                         message.method === "PUT" ||
                         message.method === "PATCH") &&
@@ -89,7 +88,6 @@ function activate(context) {
                             bodyToSend = JSON.stringify(JSON.parse(message.body || "{}"));
                         }
                         catch {
-                            // send raw text if not JSON
                             bodyToSend = message.body;
                         }
                     }

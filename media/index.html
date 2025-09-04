@@ -11,26 +11,27 @@
     <div class="container" id="mainContainer">
       <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-          <h2>History</h2>
-          <div class="sidebar-actions">
-            <button id="newRequestBtn" class="new-request-btn" title="New Request">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 4C11.4477 4 11 4.44772 11 5V11H5C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13H11V19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19V13H19C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11H13V5C13 4.44772 12.5523 4 12 4Z" />
-              </svg>
-            </button>
-            <button id="toggleSidebarBtn" class="toggle-sidebar-btn" title="Toggle Sidebar">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path class="collapse-icon" d="M15 17L10 12L15 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path class="expand-icon" d="M9 7L14 12L9 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-          </div>
+          <h2>Collections</h2>
         </div>
         <div id="requestList" class="request-list">
           </div>
       </div>
 
       <div class="main-content">
+        <div class="main-toolbar">
+          <button id="newRequestBtn" class="new-request-btn" title="New Request">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 4C11.4477 4 11 4.44772 11 5V11H5C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13H11V19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19V13H19C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11H13V5C13 4.44772 12.5523 4 12 4Z" />
+            </svg>
+            New
+          </button>
+          <button id="toggleSidebarBtn" class="toggle-sidebar-btn" title="Toggle Sidebar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path class="collapse-icon" d="M15 17L10 12L15 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path class="expand-icon" d="M9 7L14 12L9 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
         <div class="request-section card"> <input type="text" id="requestNameInput" class="request-name-input" placeholder="Request Name (Optional)" />
           <div class="request-line">
             <select id="methodSelect" class="method-select">
@@ -53,6 +54,8 @@
             <button class="tab-button" data-target="auth-panel">Auth</button>
             <button class="tab-button" data-target="headers-panel">Headers</button>
             <button class="tab-button" data-target="body-panel">Body</button>
+            <button class="tab-button" data-target="pre-request-panel">Pre-request Scripts</button>
+            <button class="tab-button" data-target="tests-panel">Tests</button>
             <button class="tab-button" data-target="env-panel">Env</button>
           </div>
 
@@ -68,10 +71,24 @@
               <select id="authTypeSelect" class="auth-select">
                 <option value="none">No Auth</option>
                 <option value="bearer">Bearer Token</option>
+                <option value="basic">Basic Auth</option>
+                <option value="apikey">API Key</option>
               </select>
               <div id="bearerTokenInputGroup" class="auth-input-group hidden">
                 <label for="bearerTokenInput">Bearer Token:</label>
                 <input type="password" id="bearerTokenInput" class="auth-input" placeholder="Your Bearer Token" />
+              </div>
+              <div id="basicAuthInputGroup" class="auth-input-group hidden">
+                <label for="basicUsernameInput">Username:</label>
+                <input type="text" id="basicUsernameInput" class="auth-input" placeholder="Username" />
+                <label for="basicPasswordInput">Password:</label>
+                <input type="password" id="basicPasswordInput" class="auth-input" placeholder="Password" />
+              </div>
+              <div id="apiKeyInputGroup" class="auth-input-group hidden">
+                <label for="apiKeyInput">API Key:</label>
+                <input type="text" id="apiKeyInput" class="auth-input" placeholder="Your API Key" />
+                <label for="apiKeyHeaderInput">Header Name:</label>
+                <input type="text" id="apiKeyHeaderInput" class="auth-input" placeholder="X-API-Key" value="X-API-Key" />
               </div>
             </div>
           </div>
@@ -108,6 +125,32 @@
             <textarea id="requestBody" class="code-input" placeholder="Request Body (JSON, XML, etc.)"></textarea>
           </div>
           
+          <div id="pre-request-panel" class="tab-panel hidden">
+            <div class="textarea-header">
+              <label>Pre-request Scripts</label>
+              <div class="textarea-actions">
+                <button id="copyPreRequestBtn" class="icon-button copy-button" title="Copy Pre-request Script">
+                  <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  <svg class="check-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </button>
+              </div>
+            </div>
+            <textarea id="preRequestScript" class="code-input" placeholder="Pre-request scripts run before the request is sent. Use JavaScript to modify the request."></textarea>
+          </div>
+
+          <div id="tests-panel" class="tab-panel hidden">
+            <div class="textarea-header">
+              <label>Tests</label>
+              <div class="textarea-actions">
+                <button id="copyTestsBtn" class="icon-button copy-button" title="Copy Tests">
+                  <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  <svg class="check-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </button>
+              </div>
+            </div>
+            <textarea id="testsScript" class="code-input" placeholder="Tests run after the response is received. Use JavaScript to validate the response."></textarea>
+          </div>
+          
           <div id="env-panel" class="tab-panel hidden">
               <p class="env-description">Define global variables as a JSON object. Use `{{variableName}}` in URL, Headers, or Body for dynamic values.</p>
               <textarea id="environmentVariables" class="code-input" placeholder='{"baseUrl": "https://api.example.com", "apiKey": "your_api_key"}'></textarea>
@@ -133,6 +176,7 @@
           
           <div class="tab-controls response-tab-controls">
             <button class="tab-button active" data-target="response-body-panel">Body</button>
+            <button class="tab-button" data-target="response-cookies-panel">Cookies</button>
             <button class="tab-button" data-target="response-headers-panel">Headers</button>
           </div>
 
@@ -144,6 +188,16 @@
                   </button>
               </div>
               <pre id="responseOutput" class="code-output">Response body will appear here...</pre>
+          </div>
+
+          <div id="response-cookies-panel" class="tab-panel hidden response-panel">
+              <div class="response-panel-header">
+                  <button id="copyResponseCookiesBtn" class="icon-button copy-button" title="Copy Response Cookies">
+                      <svg class="copy-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                      <svg class="check-icon hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </button>
+              </div>
+              <pre id="responseCookiesOutput" class="code-output">Response cookies will appear here...</pre>
           </div>
 
           <div id="response-headers-panel" class="tab-panel hidden response-panel">

@@ -13,18 +13,31 @@ const sendBtnEl = document.getElementById("sendBtn");
 
 const requestBodyEl = document.getElementById("requestBody");
 const requestHeadersEl = document.getElementById("requestHeaders");
-const responseOutputEl = document.getElementById("responseOutput"); 
-const responseHeadersOutputEl = document.getElementById("responseHeadersOutput"); 
+const responseOutputEl = document.getElementById("responseOutput");
+const responseHeadersOutputEl = document.getElementById(
+  "responseHeadersOutput"
+);
+const responseCookiesOutputEl = document.getElementById(
+  "responseCookiesOutput"
+);
 
 const statusCodeEl = document.getElementById("statusCode");
 const responseTimeEl = document.getElementById("responseTime");
 const responseSizeEl = document.getElementById("responseSize");
 const clearResponseBtn = document.getElementById("clearResponseBtn");
 
-const requestTabButtons = document.querySelectorAll(".request-section .tab-button"); 
-const requestTabPanels = document.querySelectorAll(".request-section .tab-panel"); 
-const responseTabButtons = document.querySelectorAll(".response-section .tab-button"); 
-const responseTabPanels = document.querySelectorAll(".response-section .tab-panel");
+const requestTabButtons = document.querySelectorAll(
+  ".request-section .tab-button"
+);
+const requestTabPanels = document.querySelectorAll(
+  ".request-section .tab-panel"
+);
+const responseTabButtons = document.querySelectorAll(
+  ".response-section .tab-button"
+);
+const responseTabPanels = document.querySelectorAll(
+  ".response-section .tab-panel"
+);
 
 const paramsContainer = document.getElementById("paramsContainer");
 const addParamBtn = document.getElementById("addParamBtn");
@@ -32,8 +45,16 @@ const addParamBtn = document.getElementById("addParamBtn");
 const authTypeSelect = document.getElementById("authTypeSelect");
 const bearerTokenInputGroup = document.getElementById("bearerTokenInputGroup");
 const bearerTokenInput = document.getElementById("bearerTokenInput");
+const basicAuthInputGroup = document.getElementById("basicAuthInputGroup");
+const basicUsernameInput = document.getElementById("basicUsernameInput");
+const basicPasswordInput = document.getElementById("basicPasswordInput");
+const apiKeyInputGroup = document.getElementById("apiKeyInputGroup");
+const apiKeyInput = document.getElementById("apiKeyInput");
+const apiKeyHeaderInput = document.getElementById("apiKeyHeaderInput");
 
 const environmentVariablesEl = document.getElementById("environmentVariables");
+const preRequestScriptEl = document.getElementById("preRequestScript");
+const testsScriptEl = document.getElementById("testsScript");
 
 const formatHeadersBtn = document.getElementById("formatHeadersBtn");
 const formatBodyBtn = document.getElementById("formatBodyBtn");
@@ -41,11 +62,19 @@ const formatBodyBtn = document.getElementById("formatBodyBtn");
 const copyUrlBtn = document.getElementById("copyUrlBtn");
 const copyHeadersBtn = document.getElementById("copyHeadersBtn");
 const copyBodyBtn = document.getElementById("copyBodyBtn");
+const copyPreRequestBtn = document.getElementById("copyPreRequestBtn");
+const copyTestsBtn = document.getElementById("copyTestsBtn");
 const copyResponseBodyBtn = document.getElementById("copyResponseBodyBtn");
-const copyResponseHeadersBtn = document.getElementById("copyResponseHeadersBtn");
+const copyResponseCookiesBtn = document.getElementById(
+  "copyResponseCookiesBtn"
+);
+const copyResponseHeadersBtn = document.getElementById(
+  "copyResponseHeadersBtn"
+);
 
-
-let savedRequests = JSON.parse(localStorage.getItem("apiTesterRequests") || "[]");
+let savedRequests = JSON.parse(
+  localStorage.getItem("apiTesterRequests") || "[]"
+);
 let activeRequestIndex = null;
 let isSidebarCollapsed = false;
 let environmentVars = {};
@@ -55,45 +84,55 @@ function saveStateToVsCode() {
     requests: savedRequests,
     activeIndex: activeRequestIndex,
     isSidebarCollapsed: isSidebarCollapsed,
-    environmentVars: environmentVariablesEl.value 
+    environmentVars: environmentVariablesEl.value,
   });
 }
 
 function parseEnvironmentVariables() {
-    try {
-        environmentVars = JSON.parse(environmentVariablesEl.value || "{}");
-    } catch (e) {
-        console.error("Error parsing environment variables JSON:", e);
-        environmentVars = {}; 
-        vscode.postMessage({
-            command: "showError",
-            message: "Invalid JSON in Environment Variables. Please correct it."
-        });
-    }
-    saveStateToVsCode(); 
+  try {
+    environmentVars = JSON.parse(environmentVariablesEl.value || "{}");
+  } catch (e) {
+    console.error("Error parsing environment variables JSON:", e);
+    environmentVars = {};
+    vscode.postMessage({
+      command: "showError",
+      message: "Invalid JSON in Environment Variables. Please correct it.",
+    });
+  }
+  saveStateToVsCode();
 }
 
 /**
  * Replaces `{{variableName}}` placeholders in a string with their corresponding values
  * from `environmentVars`.
- * @param {string} str 
+ * @param {string} str
  * @returns {string}
  */
 function substituteVariables(str) {
-    if (!str) return '';
-    return str.replace(/\{\{(\w+)\}\}/g, (match, varName) => {
-        return environmentVars[varName] !== undefined ? environmentVars[varName] : match;
-    });
+  if (!str) {
+    return "";
+  }
+  return str.replace(/\{\{(\w+)\}\}/g, (match, varName) => {
+    return environmentVars[varName] !== undefined
+      ? environmentVars[varName]
+      : match;
+  });
 }
 
 function renderRequestList() {
   requestListEl.innerHTML = "";
   savedRequests.forEach((req, index) => {
     const item = document.createElement("div");
-    item.className = "request-item" + (index === activeRequestIndex ? " active" : "");
-    const displayName = req.name && req.name.trim() !== "" 
-                        ? req.name 
-                        : `[${req.method}] ${req.url.length > 30 ? req.url.substring(0, 27) + "..." : req.url || 'New Request'}`;
+    item.className =
+      "request-item" + (index === activeRequestIndex ? " active" : "");
+    const displayName =
+      req.name && req.name.trim() !== ""
+        ? req.name
+        : `[${req.method}] ${
+            req.url.length > 30
+              ? req.url.substring(0, 27) + "..."
+              : req.url || "New Request"
+          }`;
     item.innerHTML = `
       <span>${displayName}</span>
       <button class="delete-btn" title="Delete Request">✖</button>
@@ -109,13 +148,13 @@ function renderRequestList() {
 
 /**
  * Loads a request from history into the main editor.
- * @param {number} index 
+ * @param {number} index
  */
 function loadRequest(index) {
   if (activeRequestIndex !== null && activeRequestIndex !== index) {
-      saveCurrentRequest();
+    saveCurrentRequest();
   } else if (activeRequestIndex === null && urlInputEl.value.trim() !== "") {
-      saveCurrentRequest();
+    saveCurrentRequest();
   }
 
   activeRequestIndex = index;
@@ -126,12 +165,29 @@ function loadRequest(index) {
   urlInputEl.value = request.url;
   requestHeadersEl.value = request.headers;
   requestBodyEl.value = request.body;
+  preRequestScriptEl.value = request.preRequestScript || "";
+  testsScriptEl.value = request.testsScript || "";
 
   renderParams(request.params || []);
 
-  authTypeSelect.value = request.auth && request.auth.type ? request.auth.type : "none";
-  updateAuthUI(); 
-  bearerTokenInput.value = request.auth && request.auth.value ? request.auth.value : "";
+  authTypeSelect.value =
+    request.auth && request.auth.type ? request.auth.type : "none";
+  updateAuthUI();
+  bearerTokenInput.value =
+    request.auth && request.auth.bearerToken ? request.auth.bearerToken : "";
+  basicUsernameInput.value =
+    request.auth && request.auth.basicUsername
+      ? request.auth.basicUsername
+      : "";
+  basicPasswordInput.value = request.auth.basicPassword
+    ? request.auth.basicPassword
+    : "";
+  apiKeyInput.value =
+    request.auth && request.auth.apiKey ? request.auth.apiKey : "";
+  apiKeyHeaderInput.value =
+    request.auth && request.auth.apiKeyHeader
+      ? request.auth.apiKeyHeader
+      : "X-API-Key";
 
   resetResponseDisplay();
   renderRequestList();
@@ -140,16 +196,22 @@ function loadRequest(index) {
 
 function saveCurrentRequest() {
   const currentRequest = {
-    name: requestNameInput.value.trim(), 
+    name: requestNameInput.value.trim(),
     method: methodSelectEl.value,
     url: urlInputEl.value,
     headers: requestHeadersEl.value || "{}",
     body: requestBodyEl.value || "{}",
-    params: getParamsFromUI(), 
-    auth: { 
-        type: authTypeSelect.value,
-        value: bearerTokenInput.value
-    }
+    params: getParamsFromUI(),
+    auth: {
+      type: authTypeSelect.value,
+      bearerToken: bearerTokenInput.value,
+      basicUsername: basicUsernameInput.value,
+      basicPassword: basicPasswordInput.value,
+      apiKey: apiKeyInput.value,
+      apiKeyHeader: apiKeyHeaderInput.value,
+    },
+    preRequestScript: preRequestScriptEl.value || "",
+    testsScript: testsScriptEl.value || "",
   };
 
   if (activeRequestIndex !== null && savedRequests[activeRequestIndex]) {
@@ -159,21 +221,21 @@ function saveCurrentRequest() {
     activeRequestIndex = 0;
   }
   localStorage.setItem("apiTesterRequests", JSON.stringify(savedRequests));
-  renderRequestList(); 
+  renderRequestList();
 }
 
 /**
  * Deletes a request from history.
- * @param {number} indexToDelete 
+ * @param {number} indexToDelete
  */
 function deleteRequest(indexToDelete) {
   savedRequests.splice(indexToDelete, 1);
 
   if (activeRequestIndex === indexToDelete) {
     activeRequestIndex = null;
-    resetRequestEditor(); 
+    resetRequestEditor();
   } else if (activeRequestIndex > indexToDelete) {
-    activeRequestIndex--; 
+    activeRequestIndex--;
   }
 
   localStorage.setItem("apiTesterRequests", JSON.stringify(savedRequests));
@@ -187,10 +249,16 @@ function resetRequestEditor() {
   urlInputEl.value = "";
   requestHeadersEl.value = "{}";
   requestBodyEl.value = "{}";
-  renderParams([]); 
+  preRequestScriptEl.value = "";
+  testsScriptEl.value = "";
+  renderParams([]);
   authTypeSelect.value = "none";
   bearerTokenInput.value = "";
-  updateAuthUI(); 
+  basicUsernameInput.value = "";
+  basicPasswordInput.value = "";
+  apiKeyInput.value = "";
+  apiKeyHeaderInput.value = "X-API-Key";
+  updateAuthUI();
   resetResponseDisplay();
   activeRequestIndex = null;
   renderRequestList();
@@ -202,47 +270,54 @@ function resetResponseDisplay() {
   responseTimeEl.textContent = "Time: -";
   responseSizeEl.textContent = "Size: -";
   responseOutputEl.textContent = "Response body will appear here...";
-  responseHeadersOutputEl.textContent = "Response headers will appear here..."; 
-  statusCodeEl.classList.remove('status-code-success', 'status-code-error');
+  responseHeadersOutputEl.textContent = "Response headers will appear here...";
+  responseCookiesOutputEl.textContent = "Response cookies will appear here...";
+  statusCodeEl.classList.remove("status-code-success", "status-code-error");
   switchTab(responseTabButtons[0], responseTabButtons, responseTabPanels);
 }
 
 /**
  * Adds a new empty parameter row to the UI.
- * @param {object} [param={}] 
+ * @param {object} [param={}]
  */
 function addParamRow(param = {}) {
-    const row = document.createElement('div');
-    row.className = 'key-value-row';
-    row.innerHTML = `
-        <input type="checkbox" class="param-enabled" ${param.enabled !== false ? 'checked' : ''}>
-        <input type="text" class="param-key" placeholder="Key" value="${param.key || ''}">
-        <input type="text" class="param-value" placeholder="Value" value="${param.value || ''}">
+  const row = document.createElement("div");
+  row.className = "key-value-row";
+  row.innerHTML = `
+        <input type="checkbox" class="param-enabled" ${
+          param.enabled !== false ? "checked" : ""
+        }>
+        <input type="text" class="param-key" placeholder="Key" value="${
+          param.key || ""
+        }">
+        <input type="text" class="param-value" placeholder="Value" value="${
+          param.value || ""
+        }">
         <button class="delete-key-value-btn" title="Delete Parameter">✖</button>
     `;
-    paramsContainer.appendChild(row);
+  paramsContainer.appendChild(row);
 
-    row.querySelector('.delete-key-value-btn').addEventListener('click', () => {
-        row.remove();
-        saveCurrentRequest(); 
-    });
+  row.querySelector(".delete-key-value-btn").addEventListener("click", () => {
+    row.remove();
+    saveCurrentRequest();
+  });
 
-    row.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', saveCurrentRequest);
-    });
+  row.querySelectorAll("input").forEach((input) => {
+    input.addEventListener("input", saveCurrentRequest);
+  });
 }
 
 /**
  * Renders parameter rows based on an array of parameter objects.
- * @param {Array<object>} params 
+ * @param {Array<object>} params
  */
 function renderParams(params) {
-    paramsContainer.innerHTML = ''; 
-    if (params.length === 0) {
-        addParamRow();
-    } else {
-        params.forEach(param => addParamRow(param));
-    }
+  paramsContainer.innerHTML = "";
+  if (params.length === 0) {
+    addParamRow();
+  } else {
+    params.forEach((param) => addParamRow(param));
+  }
 }
 
 /**
@@ -250,129 +325,156 @@ function renderParams(params) {
  * @returns {Array<object>}
  */
 function getParamsFromUI() {
-    const params = [];
-    paramsContainer.querySelectorAll('.key-value-row').forEach(row => {
-        const enabled = row.querySelector('.param-enabled').checked;
-        const key = row.querySelector('.param-key').value.trim();
-        const value = row.querySelector('.param-value').value.trim();
-        if (key || value) { 
-            params.push({ key, value, enabled });
-        }
-    });
-    return params;
+  const params = [];
+  paramsContainer.querySelectorAll(".key-value-row").forEach((row) => {
+    const enabled = row.querySelector(".param-enabled").checked;
+    const key = row.querySelector(".param-key").value.trim();
+    const value = row.querySelector(".param-value").value.trim();
+    if (key || value) {
+      params.push({ key, value, enabled });
+    }
+  });
+  return params;
 }
 
 /**
  * Builds the URL with query parameters.
- * @param {string} baseUrl 
- * @param {Array<object>} params 
- * @returns {string} 
+ * @param {string} baseUrl
+ * @param {Array<object>} params
+ * @returns {string}
  */
 function buildUrlWithParams(baseUrl, params) {
-    let url = baseUrl;
-    const queryString = params
-        .filter(p => p.enabled && p.key) 
-        .map(p => `${encodeURIComponent(p.key)}=${encodeURIComponent(substituteVariables(p.value))}`) 
-        .join('&');
+  let url = baseUrl;
+  const queryString = params
+    .filter((p) => p.enabled && p.key)
+    .map(
+      (p) =>
+        `${encodeURIComponent(p.key)}=${encodeURIComponent(
+          substituteVariables(p.value)
+        )}`
+    )
+    .join("&");
 
-    if (queryString) {
-        url += (url.includes('?') ? '&' : '?') + queryString;
-    }
-    return url;
+  if (queryString) {
+    url += (url.includes("?") ? "&" : "?") + queryString;
+  }
+  return url;
 }
-
 
 function updateAuthUI() {
-    const selectedType = authTypeSelect.value;
-    if (selectedType === "bearer") {
-        bearerTokenInputGroup.classList.remove("hidden");
-    } else {
-        bearerTokenInputGroup.classList.add("hidden");
-    }
-    saveCurrentRequest();
+  const selectedType = authTypeSelect.value;
+  bearerTokenInputGroup.classList.add("hidden");
+  basicAuthInputGroup.classList.add("hidden");
+  apiKeyInputGroup.classList.add("hidden");
+  if (selectedType === "bearer") {
+    bearerTokenInputGroup.classList.remove("hidden");
+  } else if (selectedType === "basic") {
+    basicAuthInputGroup.classList.remove("hidden");
+  } else if (selectedType === "apikey") {
+    apiKeyInputGroup.classList.remove("hidden");
+  }
+  saveCurrentRequest();
 }
-
 
 /**
  * Formats a textarea's content as pretty-printed JSON.
- * @param {HTMLTextAreaElement} textareaEl 
+ * @param {HTMLTextAreaElement} textareaEl
  */
 function formatJsonInput(textareaEl) {
-    try {
-        const parsed = JSON.parse(textareaEl.value);
-        textareaEl.value = JSON.stringify(parsed, null, 2);
-        vscode.postMessage({ command: "showInfo", message: "JSON formatted successfully!" });
-    } catch (e) {
-        vscode.postMessage({ command: "showError", message: "Invalid JSON. Cannot format." });
-    }
+  try {
+    const parsed = JSON.parse(textareaEl.value);
+    textareaEl.value = JSON.stringify(parsed, null, 2);
+    vscode.postMessage({
+      command: "showInfo",
+      message: "JSON formatted successfully!",
+    });
+  } catch (e) {
+    vscode.postMessage({
+      command: "showError",
+      message: "Invalid JSON. Cannot format.",
+    });
+  }
 }
 
 /**
  * Copies text to the clipboard and provides user feedback with icon animation.
- * @param {string} text 
- * @param {HTMLElement} buttonElement 
- * @param {string} successMessage 
+ * @param {string} text
+ * @param {HTMLElement} buttonElement
+ * @param {string} successMessage
  */
-function copyToClipboard(text, buttonElement, successMessage = "Copied to clipboard!") {
-    if (!navigator.clipboard) {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        textarea.style.position = 'fixed'; 
-        textarea.style.left = '-9999px';
-        textarea.style.opacity = '0'; 
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        try {
-            document.execCommand('copy');
-            vscode.postMessage({ command: "showInfo", message: successMessage });
-        } catch (err) {
-            vscode.postMessage({ command: "showError", message: "Failed to copy text. Please copy manually." });
-        }
-        document.body.removeChild(textarea);
-        return;
+function copyToClipboard(
+  text,
+  buttonElement,
+  successMessage = "Copied to clipboard!"
+) {
+  if (!navigator.clipboard) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+      document.execCommand("copy");
+      vscode.postMessage({ command: "showInfo", message: successMessage });
+    } catch (err) {
+      vscode.postMessage({
+        command: "showError",
+        message: "Failed to copy text. Please copy manually.",
+      });
     }
+    document.body.removeChild(textarea);
+    return;
+  }
 
-    const copyIcon = buttonElement.querySelector('.copy-icon');
-    const checkIcon = buttonElement.querySelector('.check-icon');
+  const copyIcon = buttonElement.querySelector(".copy-icon");
+  const checkIcon = buttonElement.querySelector(".check-icon");
 
-    navigator.clipboard.writeText(text).then(() => {
-        vscode.postMessage({ command: "showInfo", message: successMessage });
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      vscode.postMessage({ command: "showInfo", message: successMessage });
 
+      if (copyIcon && checkIcon) {
+        copyIcon.classList.add("hidden");
+        checkIcon.classList.remove("hidden");
+        buttonElement.classList.add("copied-active");
+      }
+
+      setTimeout(() => {
         if (copyIcon && checkIcon) {
-            copyIcon.classList.add('hidden');
-            checkIcon.classList.remove('hidden');
-            buttonElement.classList.add('copied-active'); 
+          copyIcon.classList.remove("hidden");
+          checkIcon.classList.add("hidden");
+          buttonElement.classList.remove("copied-active");
         }
-
-        setTimeout(() => {
-            if (copyIcon && checkIcon) {
-                copyIcon.classList.remove('hidden');
-                checkIcon.classList.add('hidden');
-                buttonElement.classList.remove('copied-active');
-            }
-        }, 1200); 
-    }).catch(err => {
-        vscode.postMessage({ command: "showError", message: "Failed to copy text: " + err });
+      }, 1200);
+    })
+    .catch((err) => {
+      vscode.postMessage({
+        command: "showError",
+        message: "Failed to copy text: " + err,
+      });
     });
 }
 
 /**
- * @param {HTMLElement} clickedButton 
- * @param {NodeListOf<HTMLElement>} allButtons 
- * @param {NodeListOf<HTMLElement>} allPanels 
+ * @param {HTMLElement} clickedButton
+ * @param {NodeListOf<HTMLElement>} allButtons
+ * @param {NodeListOf<HTMLElement>} allPanels
  */
 function switchTab(clickedButton, allButtons, allPanels) {
-    allButtons.forEach(btn => btn.classList.remove("active"));
-    allPanels.forEach(panel => panel.classList.add("hidden"));
+  allButtons.forEach((btn) => btn.classList.remove("active"));
+  allPanels.forEach((panel) => panel.classList.add("hidden"));
 
-    clickedButton.classList.add("active");
-    const targetPanelId = clickedButton.dataset.target;
-    document.getElementById(targetPanelId).classList.remove("hidden");
+  clickedButton.classList.add("active");
+  const targetPanelId = clickedButton.dataset.target;
+  document.getElementById(targetPanelId).classList.remove("hidden");
 }
 
 sendBtnEl.addEventListener("click", () => {
-  saveCurrentRequest(); 
+  saveCurrentRequest();
 
   let url = substituteVariables(urlInputEl.value);
   const method = methodSelectEl.value;
@@ -381,27 +483,72 @@ sendBtnEl.addEventListener("click", () => {
 
   url = buildUrlWithParams(url, getParamsFromUI());
 
-  if (authTypeSelect.value === "bearer" && bearerTokenInput.value.trim() !== "") {
-      try {
-          const headersObj = JSON.parse(headers || "{}");
-          headersObj["Authorization"] = `Bearer ${substituteVariables(bearerTokenInput.value)}`;
-          headers = JSON.stringify(headersObj);
-      } catch (e) {
-          console.error("Error parsing headers JSON for auth:", e);
-          vscode.postMessage({
-            command: "showError",
-            message: "Invalid JSON in Request Headers. Bearer token might not be applied correctly."
-          });
-      
-      }
+  if (
+    authTypeSelect.value === "bearer" &&
+    bearerTokenInput.value.trim() !== ""
+  ) {
+    try {
+      const headersObj = JSON.parse(headers || "{}");
+      headersObj["Authorization"] = `Bearer ${substituteVariables(
+        bearerTokenInput.value
+      )}`;
+      headers = JSON.stringify(headersObj);
+    } catch (e) {
+      console.error("Error parsing headers JSON for auth:", e);
+      vscode.postMessage({
+        command: "showError",
+        message:
+          "Invalid JSON in Request Headers. Bearer token might not be applied correctly.",
+      });
+    }
+  } else if (
+    authTypeSelect.value === "basic" &&
+    basicUsernameInput.value.trim() !== "" &&
+    basicPasswordInput.value.trim() !== ""
+  ) {
+    try {
+      const headersObj = JSON.parse(headers || "{}");
+      const credentials = btoa(
+        `${substituteVariables(basicUsernameInput.value)}:${substituteVariables(
+          basicPasswordInput.value
+        )}`
+      );
+      headersObj["Authorization"] = `Basic ${credentials}`;
+      headers = JSON.stringify(headersObj);
+    } catch (e) {
+      console.error("Error parsing headers JSON for basic auth:", e);
+      vscode.postMessage({
+        command: "showError",
+        message:
+          "Invalid JSON in Request Headers. Basic auth might not be applied correctly.",
+      });
+    }
+  } else if (
+    authTypeSelect.value === "apikey" &&
+    apiKeyInput.value.trim() !== ""
+  ) {
+    try {
+      const headersObj = JSON.parse(headers || "{}");
+      const headerName =
+        substituteVariables(apiKeyHeaderInput.value) || "X-API-Key";
+      headersObj[headerName] = substituteVariables(apiKeyInput.value);
+      headers = JSON.stringify(headersObj);
+    } catch (e) {
+      console.error("Error parsing headers JSON for API key:", e);
+      vscode.postMessage({
+        command: "showError",
+        message:
+          "Invalid JSON in Request Headers. API key might not be applied correctly.",
+      });
+    }
   }
 
   statusCodeEl.textContent = "Status: Sending...";
   responseTimeEl.textContent = "Time: -";
   responseSizeEl.textContent = "Size: -";
   responseOutputEl.textContent = "Waiting for response...";
-  responseHeadersOutputEl.textContent = "Waiting for response..."; 
-  statusCodeEl.classList.remove('status-code-success', 'status-code-error');
+  responseHeadersOutputEl.textContent = "Waiting for response...";
+  statusCodeEl.classList.remove("status-code-success", "status-code-error");
   switchTab(responseTabButtons[0], responseTabButtons, responseTabPanels);
 
   vscode.postMessage({
@@ -414,15 +561,15 @@ sendBtnEl.addEventListener("click", () => {
 });
 
 window.addEventListener("message", (event) => {
-  const message = event.data; 
+  const message = event.data;
   if (message.command === "response") {
     statusCodeEl.textContent = `Status: ${message.status} ${message.statusText}`;
     if (message.ok && message.status >= 200 && message.status < 300) {
-        statusCodeEl.classList.add('status-code-success');
-        statusCodeEl.classList.remove('status-code-error');
+      statusCodeEl.classList.add("status-code-success");
+      statusCodeEl.classList.remove("status-code-error");
     } else {
-        statusCodeEl.classList.add('status-code-error');
-        statusCodeEl.classList.remove('status-code-success');
+      statusCodeEl.classList.add("status-code-error");
+      statusCodeEl.classList.remove("status-code-success");
     }
 
     responseTimeEl.textContent = `Time: ${message.time}ms`;
@@ -430,124 +577,172 @@ window.addEventListener("message", (event) => {
     const sizeInBytes = new TextEncoder().encode(message.body).length;
     let sizeDisplay;
     if (sizeInBytes < 1024) {
-        sizeDisplay = `${sizeInBytes} B`;
+      sizeDisplay = `${sizeInBytes} B`;
     } else if (sizeInBytes < 1024 * 1024) {
-        sizeDisplay = `${(sizeInBytes / 1024).toFixed(2)} KB`;
+      sizeDisplay = `${(sizeInBytes / 1024).toFixed(2)} KB`;
     } else {
-        sizeDisplay = `${(sizeInBytes / (1024 * 1024)).toFixed(2)} MB`;
+      sizeDisplay = `${(sizeInBytes / (1024 * 1024)).toFixed(2)} MB`;
     }
     responseSizeEl.textContent = `Size: ${sizeDisplay}`;
 
     let displayBody = message.body;
-    const contentType = message.headers && message.headers['content-type'] ? message.headers['content-type'] : '';
-    
-    if (contentType.includes('application/json')) {
-        try {
-            displayBody = JSON.stringify(JSON.parse(message.body), null, 2);
-        } catch (e) {
-            console.warn("Could not pretty print JSON response body:", e);
-        }
+    const contentType =
+      message.headers && message.headers["content-type"]
+        ? message.headers["content-type"]
+        : "";
+
+    if (contentType.includes("application/json")) {
+      try {
+        displayBody = JSON.stringify(JSON.parse(message.body), null, 2);
+      } catch (e) {
+        console.warn("Could not pretty print JSON response body:", e);
+      }
     }
     responseOutputEl.textContent = displayBody;
 
-    let displayHeaders = '';
+    let displayHeaders = "";
     if (message.headers) {
-        for (const key in message.headers) {
-            if (Object.hasOwnProperty.call(message.headers, key)) {
-                displayHeaders += `${key}: ${message.headers[key]}\n`;
-            }
+      for (const key in message.headers) {
+        if (Object.hasOwnProperty.call(message.headers, key)) {
+          displayHeaders += `${key}: ${message.headers[key]}\n`;
         }
+      }
     } else {
-        displayHeaders = 'No response headers received.';
+      displayHeaders = "No response headers received.";
     }
     responseHeadersOutputEl.textContent = displayHeaders;
   }
 });
 
-requestTabButtons.forEach(button => {
+requestTabButtons.forEach((button) => {
   button.addEventListener("click", () => {
     switchTab(button, requestTabButtons, requestTabPanels);
   });
 });
 
-responseTabButtons.forEach(button => {
+responseTabButtons.forEach((button) => {
   button.addEventListener("click", () => {
     switchTab(button, responseTabButtons, responseTabPanels);
   });
 });
 
 newRequestBtn.addEventListener("click", () => {
-    saveCurrentRequest(); 
-    resetRequestEditor();
+  saveCurrentRequest();
+  resetRequestEditor();
 });
 
 toggleSidebarBtn.addEventListener("click", () => {
-  isSidebarCollapsed = !isSidebarCollapsed; 
+  isSidebarCollapsed = !isSidebarCollapsed;
   mainContainer.classList.toggle("sidebar-collapsed", isSidebarCollapsed);
-  saveStateToVsCode(); 
+  saveStateToVsCode();
 });
 
 clearResponseBtn.addEventListener("click", () => {
-    resetResponseDisplay();
+  resetResponseDisplay();
 });
 
-addParamBtn.addEventListener('click', () => {
-    addParamRow();
-    saveCurrentRequest(); 
+addParamBtn.addEventListener("click", () => {
+  addParamRow();
+  saveCurrentRequest();
 });
 
-authTypeSelect.addEventListener('change', updateAuthUI);
-bearerTokenInput.addEventListener('input', saveCurrentRequest); 
+authTypeSelect.addEventListener("change", updateAuthUI);
+bearerTokenInput.addEventListener("input", saveCurrentRequest);
+basicUsernameInput.addEventListener("input", saveCurrentRequest);
+basicPasswordInput.addEventListener("input", saveCurrentRequest);
+apiKeyInput.addEventListener("input", saveCurrentRequest);
+apiKeyHeaderInput.addEventListener("input", saveCurrentRequest);
 
-requestNameInput.addEventListener('input', saveCurrentRequest);
-methodSelectEl.addEventListener('change', saveCurrentRequest);
-urlInputEl.addEventListener('input', saveCurrentRequest);
-requestHeadersEl.addEventListener('input', saveCurrentRequest);
-requestBodyEl.addEventListener('input', saveCurrentRequest);
+requestNameInput.addEventListener("input", saveCurrentRequest);
+methodSelectEl.addEventListener("change", saveCurrentRequest);
+urlInputEl.addEventListener("input", saveCurrentRequest);
+requestHeadersEl.addEventListener("input", saveCurrentRequest);
+requestBodyEl.addEventListener("input", saveCurrentRequest);
+preRequestScriptEl.addEventListener("input", saveCurrentRequest);
+testsScriptEl.addEventListener("input", saveCurrentRequest);
 
-environmentVariablesEl.addEventListener('input', parseEnvironmentVariables);
+environmentVariablesEl.addEventListener("input", parseEnvironmentVariables);
 
-formatHeadersBtn.addEventListener('click', () => formatJsonInput(requestHeadersEl));
-formatBodyBtn.addEventListener('click', () => formatJsonInput(requestBodyEl));
+formatHeadersBtn.addEventListener("click", () =>
+  formatJsonInput(requestHeadersEl)
+);
+formatBodyBtn.addEventListener("click", () => formatJsonInput(requestBodyEl));
 
-copyUrlBtn.addEventListener('click', (e) => copyToClipboard(urlInputEl.value, e.currentTarget, "URL copied!"));
-copyHeadersBtn.addEventListener('click', (e) => copyToClipboard(requestHeadersEl.value, e.currentTarget, "Request Headers copied!"));
-copyBodyBtn.addEventListener('click', (e) => copyToClipboard(requestBodyEl.value, e.currentTarget, "Request Body copied!"));
-copyResponseBodyBtn.addEventListener('click', (e) => copyToClipboard(responseOutputEl.textContent, e.currentTarget, "Response Body copied!"));
-copyResponseHeadersBtn.addEventListener('click', (e) => copyToClipboard(responseHeadersOutputEl.textContent, e.currentTarget, "Response Headers copied!"));
-
+copyUrlBtn.addEventListener("click", (e) =>
+  copyToClipboard(urlInputEl.value, e.currentTarget, "URL copied!")
+);
+copyHeadersBtn.addEventListener("click", (e) =>
+  copyToClipboard(
+    requestHeadersEl.value,
+    e.currentTarget,
+    "Request Headers copied!"
+  )
+);
+copyBodyBtn.addEventListener("click", (e) =>
+  copyToClipboard(requestBodyEl.value, e.currentTarget, "Request Body copied!")
+);
+copyPreRequestBtn.addEventListener("click", (e) =>
+  copyToClipboard(
+    preRequestScriptEl.value,
+    e.currentTarget,
+    "Pre-request Script copied!"
+  )
+);
+copyTestsBtn.addEventListener("click", (e) =>
+  copyToClipboard(testsScriptEl.value, e.currentTarget, "Tests copied!")
+);
+copyResponseBodyBtn.addEventListener("click", (e) =>
+  copyToClipboard(
+    responseOutputEl.textContent,
+    e.currentTarget,
+    "Response Body copied!"
+  )
+);
+copyResponseCookiesBtn.addEventListener("click", (e) =>
+  copyToClipboard(
+    responseCookiesOutputEl.textContent,
+    e.currentTarget,
+    "Response Cookies copied!"
+  )
+);
+copyResponseHeadersBtn.addEventListener("click", (e) =>
+  copyToClipboard(
+    responseHeadersOutputEl.textContent,
+    e.currentTarget,
+    "Response Headers copied!"
+  )
+);
 
 const restoredState = vscode.getState();
 if (restoredState) {
-    if (restoredState.requests && restoredState.requests.length > 0) {
-        savedRequests = restoredState.requests;
-        activeRequestIndex = restoredState.activeIndex;
-        if (activeRequestIndex !== null && savedRequests[activeRequestIndex]) {
-            loadRequest(activeRequestIndex);
-        } else if (savedRequests.length > 0) {
-            activeRequestIndex = 0;
-            loadRequest(0);
-        } else {
-            resetRequestEditor();
-        }
+  if (restoredState.requests && restoredState.requests.length > 0) {
+    savedRequests = restoredState.requests;
+    activeRequestIndex = restoredState.activeIndex;
+    if (activeRequestIndex !== null && savedRequests[activeRequestIndex]) {
+      loadRequest(activeRequestIndex);
+    } else if (savedRequests.length > 0) {
+      activeRequestIndex = 0;
+      loadRequest(0);
     } else {
-        resetRequestEditor();
+      resetRequestEditor();
     }
-    
-    environmentVariablesEl.value = restoredState.environmentVars || '{}';
-    parseEnvironmentVariables(); 
-
-    isSidebarCollapsed = restoredState.isSidebarCollapsed || false; 
-    mainContainer.classList.toggle("sidebar-collapsed", isSidebarCollapsed);
-
-} else {
+  } else {
     resetRequestEditor();
-    environmentVariablesEl.value = '{}';
-    parseEnvironmentVariables();
+  }
+
+  environmentVariablesEl.value = restoredState.environmentVars || "{}";
+  parseEnvironmentVariables();
+
+  isSidebarCollapsed = restoredState.isSidebarCollapsed || false;
+  mainContainer.classList.toggle("sidebar-collapsed", isSidebarCollapsed);
+} else {
+  resetRequestEditor();
+  environmentVariablesEl.value = "{}";
+  parseEnvironmentVariables();
 }
 
 if (paramsContainer.children.length === 0) {
-    addParamRow();
+  addParamRow();
 }
 
 renderRequestList();
