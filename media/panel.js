@@ -8,7 +8,6 @@ if (typeof vscode === "undefined") {
   console.log("VS Code API is available");
 }
 
-// Check if all required elements exist
 const requiredElements = [
   "newRequestBtn",
   "requestTabs",
